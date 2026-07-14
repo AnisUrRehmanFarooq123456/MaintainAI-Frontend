@@ -1,0 +1,119 @@
+.issues-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.issues-subtitle {
+    color: #64748b;
+    font-size: 13px;
+    margin-bottom: 20px;
+}
+
+.issues-filters {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.issues-search {
+    flex: 1;
+    min-width: 220px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: white;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 0 14px;
+    height: 44px;
+    color: #94a3b8;
+}
+
+.issues-search input {
+    border: none;
+    outline: none;
+    flex: 1;
+    height: 100%;
+    font-size: 13.5px;
+    color: #1e293b;
+}
+
+.issues-filter-select {
+    height: 44px;
+    padding: 0 14px;
+    border-radius: 12px;
+    border: 1.5px solid #e2e8f0;
+    background: white;
+    font-size: 13.5px;
+    color: #334155;
+    cursor: pointer;
+}
+
+.issues-loading,
+.issues-error,
+.issues-empty {
+    text-align: center;
+    padding: 40px;
+    color: #64748b;
+    font-weight: 500;
+}
+
+.issues-table-wrap {
+    background: white;
+    border-radius: 16px;
+    overflow-x: auto;
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+}
+
+.issues-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 1000px;
+}
+
+.issues-table th {
+    text-align: left;
+    padding: 14px 16px;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    color: #94a3b8;
+    border-bottom: 1px solid #f1f5f9;
+    white-space: nowrap;
+}
+
+.issues-table td {
+    padding: 13px 16px;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 13px;
+    color: #334155;
+    white-space: nowrap;
+}
+
+.issues-number {
+    font-weight: 700;
+    color: #2563eb;
+}
+
+.issues-title-cell {
+    font-weight: 600;
+    color: #1e293b;
+    white-space: normal;
+    min-width: 160px;
+}
+
+.issues-date {
+    color: #94a3b8;
+    font-size: 12px;
+}
+
+.issues-open-btn {
+    padding: 7px 16px;
+    border-radius: 8px;
+    background: #2563eb;
+    color: white;
+    font-size: 12.5px;
+    font-weight: 600;
+}

@@ -1,0 +1,112 @@
+.technicians-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.technicians-subtitle {
+    color: #64748b;
+    font-size: 13px;
+    margin-bottom: 22px;
+}
+
+.technicians-loading,
+.technicians-error,
+.technicians-empty {
+    text-align: center;
+    padding: 40px;
+    color: #64748b;
+    font-weight: 500;
+}
+
+.technicians-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+}
+
+.technician-card {
+    background: white;
+    border-radius: 18px;
+    padding: 22px;
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+    text-align: center;
+}
+
+.technician-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2563eb, #0d9488);
+    color: white;
+    font-size: 22px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 14px auto;
+}
+
+.technician-name {
+    font-size: 15.5px;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.technician-role {
+    font-size: 12.5px;
+    color: #2563eb;
+    font-weight: 600;
+    margin-top: 2px;
+}
+
+.technician-contact {
+    font-size: 12px;
+    color: #94a3b8;
+    margin-top: 3px;
+}
+
+.technician-stats {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin: 18px 0;
+    padding: 14px 0;
+    border-top: 1px solid #f1f5f9;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.technician-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.technician-stat-value {
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.technician-stat-assigned {
+    color: #d97706;
+}
+
+.technician-stat-completed {
+    color: #16a34a;
+}
+
+.technician-stat-label {
+    font-size: 11px;
+    color: #94a3b8;
+    margin-top: 2px;
+}
+
+.technician-view-btn {
+    display: block;
+    padding: 9px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #2563eb, #0d9488);
+    color: white;
+    font-size: 12.5px;
+    font-weight: 600;
+}

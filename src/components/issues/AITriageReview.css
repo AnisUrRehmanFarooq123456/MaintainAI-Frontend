@@ -1,0 +1,67 @@
+.ai-review-card {
+    border: 1.5px dashed #2563eb;
+    border-radius: 14px;
+    padding: 18px;
+    margin-bottom: 20px;
+    background: #f8fbff;
+}
+
+.ai-review-header {
+    margin-bottom: 14px;
+}
+
+.ai-review-tag {
+    font-size: 11px;
+    font-weight: 700;
+    color: #2563eb;
+    background: #dbeafe;
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+.ai-review-field {
+    margin-bottom: 12px;
+}
+
+.ai-review-field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 5px;
+}
+
+.ai-review-field input,
+.ai-review-field select {
+    width: 100%;
+    height: 40px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 0 12px;
+    font-size: 13px;
+    outline: none;
+    background: white;
+}
+
+.ai-review-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.ai-review-list-block {
+    margin-top: 10px;
+}
+
+.ai-review-list-label {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #2563eb;
+    margin-bottom: 4px;
+}
+
+.ai-review-list-block ul {
+    padding-left: 18px;
+    font-size: 12.5px;
+    color: #475569;
+}

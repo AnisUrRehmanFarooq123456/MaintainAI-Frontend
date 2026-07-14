@@ -1,0 +1,108 @@
+.tech-dash-loading,
+.tech-dash-error {
+    padding: 60px;
+    text-align: center;
+    color: #64748b;
+    font-weight: 500;
+}
+
+.tech-dash-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.tech-dash-subtitle {
+    color: #64748b;
+    font-size: 13px;
+    margin-bottom: 22px;
+}
+
+.tech-stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+.tech-task-card {
+    background: white;
+    border-radius: 16px;
+    padding: 22px;
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+}
+
+.tech-task-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 16px;
+}
+
+.tech-task-empty {
+    color: #94a3b8;
+    font-size: 13px;
+    text-align: center;
+    padding: 20px 0;
+}
+
+.tech-task-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid #f1f5f9;
+    flex-wrap: wrap;
+}
+
+.tech-task-row:last-child {
+    border-bottom: none;
+}
+
+.tech-task-info {
+    flex: 1;
+    min-width: 180px;
+}
+
+.tech-task-title-link {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.tech-task-title-link:hover {
+    color: #2563eb;
+}
+
+.tech-task-sub {
+    font-size: 12px;
+    color: #94a3b8;
+    margin-top: 2px;
+}
+
+.tech-task-badges {
+    display: flex;
+    gap: 6px;
+}
+
+.tech-task-action-btn {
+    padding: 8px 16px;
+    border-radius: 10px;
+    border: none;
+    background: linear-gradient(135deg, #2563eb, #0d9488);
+    color: white;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.tech-task-action-btn:disabled {
+    opacity: 0.6;
+}
+
+.tech-task-action-outline {
+    background: white;
+    border: 1.5px solid #2563eb;
+    color: #2563eb;
+}

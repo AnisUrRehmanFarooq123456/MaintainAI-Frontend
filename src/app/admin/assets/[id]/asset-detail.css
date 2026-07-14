@@ -1,0 +1,141 @@
+.asset-detail-loading,
+.asset-detail-error {
+    padding: 60px;
+    text-align: center;
+    color: #64748b;
+    font-weight: 500;
+}
+
+.asset-detail-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 22px;
+}
+
+.asset-detail-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.asset-detail-code {
+    font-size: 13px;
+    color: #94a3b8;
+    margin-top: 2px;
+}
+
+.asset-detail-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 18px;
+}
+
+.asset-detail-main {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.asset-detail-card {
+    background: white;
+    border-radius: 16px;
+    padding: 22px;
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+}
+
+.asset-detail-card h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 16px;
+}
+
+.asset-info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+.asset-info-grid span {
+    display: block;
+    font-size: 11.5px;
+    color: #94a3b8;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+}
+
+.asset-info-grid p {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.asset-history-empty {
+    color: #94a3b8;
+    font-size: 13px;
+}
+
+.asset-history-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.asset-history-item {
+    display: flex;
+    gap: 12px;
+}
+
+.asset-history-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #2563eb;
+    margin-top: 5px;
+    flex-shrink: 0;
+}
+
+.asset-history-action {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.asset-history-desc {
+    font-size: 12.5px;
+    color: #475569;
+    margin-top: 2px;
+}
+
+.asset-history-meta {
+    font-size: 11px;
+    color: #94a3b8;
+    margin-top: 3px;
+}
+
+.asset-qr-card {
+    text-align: center;
+}
+
+.asset-qr-image {
+    width: 180px;
+    height: 180px;
+    margin: 0 auto 14px auto;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 10px;
+}
+
+.asset-qr-link {
+    display: block;
+    color: #2563eb;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+@media (max-width: 900px) {
+    .asset-detail-grid {
+        grid-template-columns: 1fr;
+    }
+}

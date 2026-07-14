@@ -1,0 +1,80 @@
+.analytics-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.analytics-subtitle {
+    color: #64748b;
+    font-size: 13px;
+    margin-bottom: 20px;
+}
+
+.analytics-loading,
+.analytics-empty {
+    text-align: center;
+    padding: 40px;
+    color: #64748b;
+}
+
+.analytics-card {
+    background: white;
+    border-radius: 16px;
+    padding: 22px;
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+    margin-bottom: 18px;
+}
+
+.analytics-card h3 {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 14px;
+}
+
+.analytics-big-number {
+    font-size: 32px;
+    font-weight: 800;
+    color: #2563eb;
+}
+
+.bar-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+    height: 200px;
+    padding-top: 20px;
+}
+
+.bar-chart-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+}
+
+.bar-chart-bar {
+    width: 100%;
+    max-width: 40px;
+    background: linear-gradient(180deg, #2563eb, #0d9488);
+    border-radius: 8px 8px 0 0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    position: relative;
+}
+
+.bar-chart-value {
+    position: absolute;
+    top: -20px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.bar-chart-label {
+    font-size: 11px;
+    color: #94a3b8;
+    font-weight: 600;
+}
