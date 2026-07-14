@@ -24,7 +24,6 @@ type UserRow = {
   createdAt: string;
   avatarUrl?: string;
 };
-
 type RoleFilter = "All" | UserRole;
 
 const ROLE_TABS: { key: RoleFilter; label: string; icon: ReactNode }[] = [
@@ -104,6 +103,20 @@ export default function AdminUsersPage() {
       Supervisor: 0,
     };
     users.forEach((u) => {
+      const role =
+        u.role.charAt(0).toUpperCase() + u.role.slice(1).toLowerCase();
+         if (role === "Admin") {
+      base.Admin++;
+    }
+
+    if (role === "Technician") {
+      base.Technician++;
+    }
+
+    if (role === "Supervisor") {
+      base.Supervisor++;
+    }
+
       base[u.role] = (base[u.role] || 0) + 1;
     });
     return base;
@@ -140,19 +153,19 @@ export default function AdminUsersPage() {
         />
         <StatCard
           label="Admins"
-          value={counts.admin}
+          value={counts.Admin}
           color="red"
           icon={<FaUserShield />}
         />
         <StatCard
           label="Technicians"
-          value={counts.technician}
+          value={counts.Technician}
           color="teal"
           icon={<FaTools />}
         />
         <StatCard
           label="Supervisors"
-          value={counts.supervisor}
+          value={counts.Supervisor}
           color="amber"
           icon={<FaUserTie />}
         />
