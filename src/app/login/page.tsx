@@ -15,6 +15,7 @@ import {
 import AuthShell from "../../components/auth/AuthShell";
 import { saveUser } from "../../utils/auth";
 import { roleHomeRoute } from "../../utils/routes";
+import { normalizeRole } from "../../utils/routes";
 
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|net|org|edu|gov)$/;
 
@@ -22,7 +23,7 @@ type DecodedToken = {
   id: string;
   fullName: string;
   email: string;
-  role: "admin" | "technician" | "supervisor";
+  role: "admin" | "technician" | "supervisor" | "reporter";
 };
 
 export default function LoginPage() {
@@ -115,6 +116,9 @@ export default function LoginPage() {
         }
 
         const decoded = jwtDecode<DecodedToken>(token);
+        console.log("DEBUG decoded role:", decoded.role);
+        console.log("DEBUG roleHomeRoute lookup:", roleHomeRoute[decoded.role]);
+
         saveUser({
           id: decoded.id,
           fullName: decoded.fullName,
@@ -213,6 +217,7 @@ export default function LoginPage() {
               <option value="admin">Admin</option>
               <option value="technician">Technician</option>
               <option value="supervisor">Supervisor</option>
+              <option value="reporter">Public User</option>
             </select>
           </div>
         </div>

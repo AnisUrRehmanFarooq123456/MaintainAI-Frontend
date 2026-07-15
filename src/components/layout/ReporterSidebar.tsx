@@ -4,28 +4,24 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
   FaTachometerAlt,
-  FaExclamationTriangle,
-  FaChartBar,
+  FaBoxes,
+  FaClipboardList,
+  FaUser,
   FaSignOutAlt,
   FaRocket,
-  FaUsers,
-  FaUser,
-  FaBell
 } from "react-icons/fa";
 import Swal from "sweetalert2";
 import { logoutUser, getUser } from "../../utils/auth";
 import "./Sidebar.css";
 
 const NAV_ITEMS = [
-  { href: "/supervisor", label: "Dashboard", icon: FaTachometerAlt },
-  { href: "/supervisor/issues", label: "Issues", icon: FaExclamationTriangle },
-  { href: "/supervisor/technicians", label: "Technicians", icon: FaUsers },
-  { href: "/supervisor/reports", label: "Team Reports", icon: FaChartBar },
-  { href: "/supervisor/notifications", label: "Notifications", icon: FaBell },
-  { href: "/supervisor/profile", label: "My Profile", icon: FaUser },
+  { href: "/reporter", label: "Dashboard", icon: FaTachometerAlt },
+  { href: "/reporter/assets", label: "All Assets", icon: FaBoxes },
+  { href: "/reporter/issues", label: "My Complaints", icon: FaClipboardList },
+  { href: "/reporter/profile", label: "My Profile", icon: FaUser },
 ];
 
-export default function SupervisorSidebar() {
+export default function ReporterSidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const user = getUser();
@@ -54,8 +50,8 @@ export default function SupervisorSidebar() {
       <nav className="sidebar-nav">
         {NAV_ITEMS.map((item) => {
           const active =
-            item.href === "/supervisor"
-              ? pathname === "/supervisor"
+            item.href === "/reporter"
+              ? pathname === "/reporter"
               : pathname.startsWith(item.href);
           return (
             <Link
@@ -72,11 +68,11 @@ export default function SupervisorSidebar() {
       <div className="sidebar-footer">
         <div className="sidebar-user">
           <div className="sidebar-avatar">
-            {user?.fullName?.charAt(0) || "S"}
+            {user?.fullName?.charAt(0) || "U"}
           </div>
           <div>
             <p className="sidebar-user-name">{user?.fullName}</p>
-            <p className="sidebar-user-role">Supervisor</p>
+            <p className="sidebar-user-role">Public User</p>
           </div>
         </div>
         <button className="sidebar-logout" onClick={handleLogout}>

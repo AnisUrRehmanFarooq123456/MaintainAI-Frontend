@@ -257,6 +257,7 @@ export default function SignupPage() {
               <option value="technician">Technician</option>
               <option value="admin">Admin</option>
               <option value="supervisor">Supervisor</option>
+              <option value="reporter">Public User</option>
             </select>
           </div>
         </div>

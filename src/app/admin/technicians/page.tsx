@@ -105,17 +105,17 @@ export default function AdminUsersPage() {
     users.forEach((u) => {
       const role =
         u.role.charAt(0).toUpperCase() + u.role.slice(1).toLowerCase();
-         if (role === "Admin") {
-      base.Admin++;
-    }
+      if (role === "Admin") {
+        base.Admin++;
+      }
 
-    if (role === "Technician") {
-      base.Technician++;
-    }
+      if (role === "Technician") {
+        base.Technician++;
+      }
 
-    if (role === "Supervisor") {
-      base.Supervisor++;
-    }
+      if (role === "Supervisor") {
+        base.Supervisor++;
+      }
 
       base[u.role] = (base[u.role] || 0) + 1;
     });
@@ -124,7 +124,9 @@ export default function AdminUsersPage() {
 
   const filteredUsers = useMemo(() => {
     return users.filter((u) => {
-      const matchesRole = activeRole === "All" || u.role === activeRole;
+      const matchesRole =
+        activeRole === "All" ||
+        u.role.toLowerCase() === activeRole.toLowerCase();
       const q = query.trim().toLowerCase();
       const matchesQuery =
         !q ||

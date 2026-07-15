@@ -34,9 +34,7 @@ export default function SupervisorDashboardPage() {
         ]);
         setPending(pendingRes.data);
         setOpenIssuesCount(
-          openRes.data.filter(
-            (i: Issue) => !["Resolved", "Closed"].includes(i.status),
-          ).length,
+          openRes.data.filter((i: Issue) => !["Resolved", "Closed"].includes(i.status)).length,
         );
         setTechnicianCount(techRes.data.length);
       } finally {
@@ -51,48 +49,28 @@ export default function SupervisorDashboardPage() {
   return (
     <div className="sup-dash-page">
       <h1 className="sup-dash-title">Supervisor Dashboard</h1>
-      <p className="sup-dash-subtitle">
-        Review completed work and monitor team activity
-      </p>
+      <p className="sup-dash-subtitle">Review completed work and monitor team activity</p>
 
       <div className="sup-stat-grid">
-        <StatCard
-          label="Pending Your Approval"
-          value={pending.length}
-          color="amber"
-          icon={<FaClipboardCheck />}
-        />
-        <StatCard
-          label="Currently Open Issues"
-          value={openIssuesCount}
-          color="red"
-          icon={<FaExclamationCircle />}
-        />
-        <StatCard
-          label="Active Technicians"
-          value={technicianCount}
-          color="teal"
-          icon={<FaUsers />}
-        />
+        <Link href="/supervisor/issues?status=Resolved" className="stat-card-link">
+          <StatCard label="Pending Your Approval" value={pending.length} color="amber" icon={<FaClipboardCheck />} />
+        </Link>
+        <Link href="/supervisor/issues?openOnly=true" className="stat-card-link">
+          <StatCard label="Currently Open Issues" value={openIssuesCount} color="red" icon={<FaExclamationCircle />} />
+        </Link>
+        <Link href="/supervisor/technicians" className="stat-card-link">
+          <StatCard label="Active Technicians" value={technicianCount} color="teal" icon={<FaUsers />} />
+        </Link>
       </div>
 
       <div className="sup-pending-card">
         <h3>Resolved Issues — Awaiting Your Review</h3>
-        {pending.length === 0 && (
-          <p className="sup-pending-empty">Nothing pending review right now</p>
-        )}
+        {pending.length === 0 && <p className="sup-pending-empty">Nothing pending review right now</p>}
         {pending.map((issue) => (
           <div className="sup-pending-row" key={issue._id}>
             <div>
-              <Link
-                href={`/supervisor/issues/${issue._id}`}
-                className="sup-pending-title"
-              >
-                {issue.title}
-              </Link>
-              <p className="sup-pending-sub">
-                {issue.issueNumber} · {issue.asset?.name}
-              </p>
+              <Link href={`/supervisor/issues/${issue._id}`} className="sup-pending-title">{issue.title}</Link>
+              <p className="sup-pending-sub">{issue.issueNumber} · {issue.asset?.name}</p>
             </div>
             <div className="sup-pending-badges">
               <PriorityBadge priority={issue.priority} />

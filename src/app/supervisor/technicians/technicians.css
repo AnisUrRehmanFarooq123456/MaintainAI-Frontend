@@ -1,0 +1,177 @@
+.st-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.st-subtitle {
+    color: #64748b;
+    font-size: 13px;
+    margin-bottom: 22px;
+}
+
+.st-loading,
+.st-empty {
+    text-align: center;
+    padding: 40px;
+    color: #64748b;
+}
+
+.st-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+.st-card {
+    background: white;
+    border-radius: 20px;
+    padding: 22px;
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.st-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.1);
+}
+
+.st-card-top {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+.st-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2563eb, #0d9488);
+    color: white;
+    font-size: 20px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.st-card-info {
+    min-width: 0;
+}
+
+.st-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1e293b;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.st-role,
+.st-email {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11.5px;
+    color: #94a3b8;
+    margin-top: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.st-role {
+    color: #2563eb;
+    font-weight: 600;
+}
+
+.st-stats {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 14px 0;
+    border-top: 1px solid #f1f5f9;
+    border-bottom: 1px solid #f1f5f9;
+    margin-bottom: 14px;
+}
+
+.st-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.st-stat-divider {
+    width: 1px;
+    height: 30px;
+    background: #f1f5f9;
+}
+
+.st-stat-value {
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.st-assigned {
+    color: #d97706;
+}
+
+.st-completed {
+    color: #16a34a;
+}
+
+.st-stat-label {
+    font-size: 10.5px;
+    color: #94a3b8;
+    margin-top: 2px;
+}
+
+.st-workload-bar {
+    height: 6px;
+    background: #f1f5f9;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 16px;
+}
+
+.st-workload-fill {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.3s;
+}
+
+.st-workload-low {
+    background: linear-gradient(90deg, #16a34a, #22c55e);
+}
+
+.st-workload-mid {
+    background: linear-gradient(90deg, #d97706, #f59e0b);
+}
+
+.st-workload-high {
+    background: linear-gradient(90deg, #dc2626, #ef4444);
+}
+
+.st-assign-btn {
+    width: 100%;
+    height: 42px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #2563eb, #0d9488);
+    color: white;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.st-assign-btn:hover {
+    opacity: 0.92;
+}

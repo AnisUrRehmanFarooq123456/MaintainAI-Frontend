@@ -1,7 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
+import { FaClipboardList, FaCheckCircle, FaTrophy } from "react-icons/fa";
 import { apiFetch } from "../../../utils/api";
+import IssueStatusBadge from "../../../components/ui/IssueStatusBadge";
+import PriorityBadge from "../../../components/ui/PriorityBadge";
 import "./team-reports.css";
 
 type TechnicianOverview = {
@@ -12,20 +16,41 @@ type TechnicianOverview = {
   completedCount: number;
 };
 
+type AssignedIssue = {
+  _id: string;
+  issueNumber: string;
+  title: string;
+  priority: string;
+  status: string;
+  asset: { name: string; assetCode: string };
+  assignedTechnician: { _id: string; fullName: string } | null;
+};
+
 export default function SupervisorReportsPage() {
   const [technicians, setTechnicians] = useState<TechnicianOverview[]>([]);
+  const [assignedIssues, setAssignedIssues] = useState<AssignedIssue[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const load = async () => {
       try {
-        const res = await apiFetch("/api/technicians/overview");
+        const [techRes, issuesRes] = await Promise.all([
+          apiFetch("/api/technicians/overview"),
+          apiFetch("/api/issue/get-all-issues"),
+        ]);
+
         setTechnicians(
-          res.data.sort(
+          techRes.data.sort(
             (a: TechnicianOverview, b: TechnicianOverview) =>
               b.completedCount - a.completedCount,
           ),
         );
+
+        const currentlyAssigned = issuesRes.data.filter(
+          (i: AssignedIssue) =>
+            i.assignedTechnician && !["Resolved", "Closed"].includes(i.status),
+        );
+        setAssignedIssues(currentlyAssigned);
       } finally {
         setLoading(false);
       }
@@ -41,58 +66,98 @@ export default function SupervisorReportsPage() {
     (sum, t) => sum + t.assignedCount,
     0,
   );
+  const maxCompleted = Math.max(...technicians.map((t) => t.completedCount), 1);
+
+  if (loading) return <p className="tr-loading">Loading team performance...</p>;
 
   return (
-    <div className="team-reports-page">
-      <h1 className="technicians-title">Team Performance</h1>
-      <p className="technicians-subtitle">
-        Workload and completion across all technicians
+    <div className="tr-page">
+      <h1 className="tr-title">Team Performance</h1>
+      <p className="tr-subtitle">
+        Workload, active tasks, and completion across all technicians
       </p>
 
-      {loading ? (
-        <p className="technicians-loading">Loading...</p>
-      ) : (
-        <>
-          <div className="team-reports-summary">
-            <div className="team-summary-card">
-              <span className="team-summary-value">{totalAssigned}</span>
-              <span className="team-summary-label">
-                Total Currently Assigned
-              </span>
-            </div>
-            <div className="team-summary-card">
-              <span className="team-summary-value">{totalCompleted}</span>
-              <span className="team-summary-label">
-                Total Completed (All Time)
-              </span>
-            </div>
+      <div className="tr-summary-row">
+        <div className="tr-summary-card tr-summary-amber">
+          <div className="tr-summary-icon">
+            <FaClipboardList />
           </div>
+          <span className="tr-summary-value">{totalAssigned}</span>
+          <span className="tr-summary-label">Total Currently Assigned</span>
+        </div>
+        <div className="tr-summary-card tr-summary-green">
+          <div className="tr-summary-icon">
+            <FaCheckCircle />
+          </div>
+          <span className="tr-summary-value">{totalCompleted}</span>
+          <span className="tr-summary-label">Total Completed (All Time)</span>
+        </div>
+      </div>
 
-          <div className="team-reports-list">
-            <h3>Ranked by Completed Work</h3>
-            {technicians.map((tech, i) => (
-              <div className="team-reports-row" key={tech._id}>
-                <span className="team-reports-rank">#{i + 1}</span>
-                <div className="team-reports-info">
-                  <p className="team-reports-name">{tech.fullName}</p>
-                  <p className="team-reports-role">{tech.specialization}</p>
-                </div>
-                <div className="team-reports-bar-wrap">
-                  <div
-                    className="team-reports-bar"
-                    style={{
-                      width: `${totalCompleted > 0 ? (tech.completedCount / Math.max(...technicians.map((t) => t.completedCount), 1)) * 100 : 0}%`,
-                    }}
-                  ></div>
-                </div>
-                <span className="team-reports-count">
-                  {tech.completedCount} done
-                </span>
-              </div>
-            ))}
+      <div className="tr-section-card">
+        <h3>Currently Assigned Tasks</h3>
+        {assignedIssues.length === 0 && (
+          <p className="tr-empty">No active assignments right now</p>
+        )}
+        {assignedIssues.map((issue) => (
+          <div className="tr-task-row" key={issue._id}>
+            <div className="tr-task-main">
+              <Link
+                href={`/supervisor/issues/${issue._id}`}
+                className="tr-task-title"
+              >
+                {issue.title}
+              </Link>
+              <p className="tr-task-sub">
+                {issue.issueNumber} · {issue.asset?.name}
+              </p>
+            </div>
+            <div className="tr-task-badges">
+              <PriorityBadge priority={issue.priority} />
+              <IssueStatusBadge status={issue.status} />
+            </div>
+            {issue.assignedTechnician && (
+              <Link
+                href={`/supervisor/issues?assignedTechnician=${issue.assignedTechnician._id}`}
+                className="tr-task-technician"
+              >
+                {issue.assignedTechnician.fullName}
+              </Link>
+            )}
           </div>
-        </>
-      )}
+        ))}
+      </div>
+
+      <div className="tr-section-card">
+        <h3>
+          <FaTrophy className="tr-trophy" /> Ranked by Completed Work
+        </h3>
+        {technicians.length === 0 && (
+          <p className="tr-empty">No technicians registered yet</p>
+        )}
+        {technicians.map((tech, i) => (
+          <div className="tr-rank-row" key={tech._id}>
+            <span
+              className={`tr-rank-badge ${i === 0 ? "tr-rank-gold" : i === 1 ? "tr-rank-silver" : i === 2 ? "tr-rank-bronze" : ""}`}
+            >
+              #{i + 1}
+            </span>
+            <div className="tr-rank-info">
+              <p className="tr-rank-name">{tech.fullName}</p>
+              <p className="tr-rank-role">{tech.specialization}</p>
+            </div>
+            <div className="tr-rank-bar-wrap">
+              <div
+                className="tr-rank-bar"
+                style={{
+                  width: `${(tech.completedCount / maxCompleted) * 100}%`,
+                }}
+              ></div>
+            </div>
+            <span className="tr-rank-count">{tech.completedCount} done</span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

@@ -2,12 +2,14 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { FaSearch } from "react-icons/fa";
+import { useSearchParams } from "next/navigation";
+import { FaSearch, FaPlus } from "react-icons/fa";
 import { apiFetch } from "../../../utils/api";
 import { Issue } from "../../../utils/types";
 import IssueStatusBadge from "../../../components/ui/IssueStatusBadge";
 import PriorityBadge from "../../../components/ui/PriorityBadge";
-import "../../admin/issues/issues.css";
+import CreateIssueModal from "../../../components/issues/CreateIssueModal";
+import "./issues.css";
 
 const STATUSES = [
   "Reported",
@@ -21,21 +23,32 @@ const STATUSES = [
 ];
 
 export default function SupervisorIssuesPage() {
+  const searchParams = useSearchParams();
+  const openOnly = searchParams.get("openOnly") === "true";
+
   const [issues, setIssues] = useState<Issue[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState(
+    searchParams.get("status") || "",
+  );
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
   const loadIssues = async () => {
     setLoading(true);
     try {
       const params = new URLSearchParams();
-      if (statusFilter) params.append("status", statusFilter);
+      if (statusFilter && !openOnly) params.append("status", statusFilter);
       if (search) params.append("search", search);
       const res = await apiFetch(
         `/api/issue/get-all-issues?${params.toString()}`,
       );
-      setIssues(res.data);
+      const data = openOnly
+        ? res.data.filter(
+            (i: Issue) => !["Resolved", "Closed"].includes(i.status),
+          )
+        : res.data;
+      setIssues(data);
     } finally {
       setLoading(false);
     }
@@ -44,14 +57,26 @@ export default function SupervisorIssuesPage() {
   useEffect(() => {
     loadIssues();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [statusFilter]);
+  }, [statusFilter, openOnly]);
 
   return (
     <div className="issues-page">
-      <h1 className="issues-title">Issues</h1>
-      <p className="issues-subtitle">
-        All issues — review and approve resolved work
-      </p>
+      <div className="issues-header">
+        <div>
+          <h1 className="issues-title">Issues</h1>
+          <p className="issues-subtitle">
+            {openOnly
+              ? "All currently open issues"
+              : "All issues — review and approve resolved work"}
+          </p>
+        </div>
+        <button
+          className="issues-create-btn"
+          onClick={() => setShowCreateModal(true)}
+        >
+          <FaPlus /> Create Issue
+        </button>
+      </div>
 
       <div className="issues-filters">
         <form
@@ -69,18 +94,20 @@ export default function SupervisorIssuesPage() {
             onChange={(e) => setSearch(e.target.value)}
           />
         </form>
-        <select
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-          className="issues-filter-select"
-        >
-          <option value="">All Statuses</option>
-          {STATUSES.map((s) => (
-            <option key={s} value={s}>
-              {s}
-            </option>
-          ))}
-        </select>
+        {!openOnly && (
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="issues-filter-select"
+          >
+            <option value="">All Statuses</option>
+            {STATUSES.map((s) => (
+              <option key={s} value={s}>
+                {s}
+              </option>
+            ))}
+          </select>
+        )}
       </div>
 
       {loading && <p className="issues-loading">Loading issues...</p>}
@@ -132,6 +159,13 @@ export default function SupervisorIssuesPage() {
             </tbody>
           </table>
         </div>
+      )}
+
+      {showCreateModal && (
+        <CreateIssueModal
+          onClose={() => setShowCreateModal(false)}
+          onCreated={loadIssues}
+        />
       )}
     </div>
   );

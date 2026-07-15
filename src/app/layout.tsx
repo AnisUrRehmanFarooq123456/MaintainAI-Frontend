@@ -9,12 +9,13 @@ import { getUser } from "../utils/auth";
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const pathname = usePathname();
+  const rawPathname = usePathname();
+  const pathname = rawPathname || "/";
   const router = useRouter();
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    setReady(false); // reset on every route change
+    setReady(false);
 
     const user = getUser();
     const isPublicAssetPage = pathname.startsWith("/asset");
