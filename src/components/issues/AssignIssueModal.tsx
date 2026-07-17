@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 import { apiFetch } from "../../utils/api";
 import PriorityBadge from "../ui/PriorityBadge";
@@ -25,6 +26,7 @@ export default function AssignIssueModal({
   onClose: () => void;
   onAssigned: () => void;
 }) {
+  const router = useRouter();
   const [issues, setIssues] = useState<UnassignedIssue[]>([]);
   const [loading, setLoading] = useState(true);
   const [assigningId, setAssigningId] = useState<string | null>(null);
@@ -84,7 +86,11 @@ export default function AssignIssueModal({
         {!loading && issues.length > 0 && (
           <div className="aim-list">
             {issues.map((issue) => (
-              <div className="aim-row" key={issue._id}>
+              <div
+                className="aim-row"
+                key={issue._id}
+                onClick={() => router.push(`/supervisor/issues/${issue._id}`)}
+              >
                 <div className="aim-row-info">
                   <p className="aim-row-title">{issue.title}</p>
                   <p className="aim-row-sub">
@@ -95,7 +101,10 @@ export default function AssignIssueModal({
                 <button
                   className="aim-assign-btn"
                   disabled={assigningId === issue._id}
-                  onClick={() => handleAssign(issue._id)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleAssign(issue._id);
+                  }}
                 >
                   {assigningId === issue._id ? "Assigning..." : "Assign"}
                 </button>

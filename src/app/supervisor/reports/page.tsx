@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { FaClipboardList, FaCheckCircle, FaTrophy } from "react-icons/fa";
 import { apiFetch } from "../../../utils/api";
@@ -27,6 +28,7 @@ type AssignedIssue = {
 };
 
 export default function SupervisorReportsPage() {
+  const router = useRouter();
   const [technicians, setTechnicians] = useState<TechnicianOverview[]>([]);
   const [assignedIssues, setAssignedIssues] = useState<AssignedIssue[]>([]);
   const [loading, setLoading] = useState(true);
@@ -100,11 +102,16 @@ export default function SupervisorReportsPage() {
           <p className="tr-empty">No active assignments right now</p>
         )}
         {assignedIssues.map((issue) => (
-          <div className="tr-task-row" key={issue._id}>
+          <div
+            className="tr-task-row"
+            key={issue._id}
+            onClick={() => router.push(`/supervisor/issues/${issue._id}`)}
+          >
             <div className="tr-task-main">
               <Link
                 href={`/supervisor/issues/${issue._id}`}
                 className="tr-task-title"
+                onClick={(e) => e.stopPropagation()}
               >
                 {issue.title}
               </Link>
@@ -120,6 +127,7 @@ export default function SupervisorReportsPage() {
               <Link
                 href={`/supervisor/issues?assignedTechnician=${issue.assignedTechnician._id}`}
                 className="tr-task-technician"
+                onClick={(e) => e.stopPropagation()}
               >
                 {issue.assignedTechnician.fullName}
               </Link>

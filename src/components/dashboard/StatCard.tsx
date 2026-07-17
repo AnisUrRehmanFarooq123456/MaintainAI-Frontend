@@ -3,7 +3,7 @@ import "./StatCard.css";
 type Props = {
   label: string;
   value: number | string;
-  color: "blue" | "green" | "red" | "amber" | "teal";
+  color: "blue" | "green" | "red" | "amber" | "teal" | "purple";
   icon: React.ReactNode;
 };
 
