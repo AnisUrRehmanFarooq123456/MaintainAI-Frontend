@@ -1,126 +1,468 @@
-.ti-loading,
-.ti-error {
-    padding: 60px;
-    text-align: center;
-    color: #64748b;
-    font-weight: 500;
+.ti-page {
+    --ink: #201a10;
+    --ink-soft: #2c2416;
+    --graphite: #6b6255;
+    --graphite-soft: #9a917f;
+    --paper: #faf7f0;
+    --surface: #ffffff;
+    --line: #e9e3d5;
+    --line-strong: #ddd4bf;
+
+    --amber: #f0a622;
+    --amber-deep: #cf8a12;
+    --amber-ink: #7a4e0a;
+    --amber-tint: #fdf0d4;
+
+    --critical: #c8503a;
+    --critical-tint: #fbe7e2;
+    --success: #3f7d4a;
+    --success-tint: #e6f1e7;
+
+    --radius-sm: 6px;
+    --radius-md: 12px;
+    --radius-lg: 18px;
+
+    --shadow-sm: 0 1px 2px rgba(32, 26, 16, 0.07);
+    --shadow-md: 0 6px 20px rgba(32, 26, 16, 0.1);
+    --shadow-lg: 0 20px 50px rgba(32, 26, 16, 0.16);
+
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color: var(--ink);
+    background: var(--paper);
+    padding: 32px 40px 72px;
+    max-width: 1320px;
+    margin: 0 auto;
+    font-size: 16px;
+    animation: ti-fade-up 0.5s ease both;
 }
 
+.ti-page * {
+    box-sizing: border-box;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ti-page * {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+@keyframes ti-fade-up {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes ti-fade-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes ti-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ---------- States ---------- */
+.ti-loading,
+.ti-error {
+    padding: 80px 20px;
+    text-align: center;
+    color: var(--graphite);
+    font-weight: 500;
+    font-size: 16px;
+    animation: ti-fade-in 0.4s ease both;
+}
+
+.ti-loading::after {
+    content: "";
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-left: 12px;
+    border: 2.5px solid var(--line-strong);
+    border-top-color: var(--amber);
+    border-radius: 50%;
+    vertical-align: -3px;
+    animation: ti-spin 0.7s linear infinite;
+}
+
+.ti-error {
+    color: var(--critical);
+    font-weight: 600;
+}
+
+/* ---------- Back button ---------- */
+.ti-back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 12px 20px 12px 18px;
+    font-size: 14.5px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: var(--ink-soft);
+    text-decoration: none;
+    cursor: pointer;
+    margin-bottom: 26px;
+    box-shadow: var(--shadow-sm);
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.18s ease, box-shadow 0.18s ease;
+    animation: ti-fade-up 0.5s ease both;
+}
+
+.ti-back-btn svg {
+    font-size: 13px;
+    color: var(--amber-deep);
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.ti-back-btn:hover {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.ti-back-btn:hover svg {
+    color: var(--amber);
+    transform: translateX(-4px);
+}
+
+.ti-back-btn:active {
+    transform: translateY(0);
+}
+
+.ti-back-btn:focus-visible {
+    outline: 2px solid var(--amber);
+    outline-offset: 2px;
+}
+
+/* ---------- Header ---------- */
 .ti-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 16px;
+    animation: ti-fade-up 0.55s ease 0.05s both;
 }
 
 .ti-number {
-    font-size: 12px;
-    color: #2563eb;
-    font-weight: 700;
+    display: inline-block;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    color: var(--amber-ink);
+    background: var(--amber-tint);
+    border: 1px solid #f0dcab;
+    border-radius: 5px;
+    padding: 4px 10px;
+    margin: 0 0 12px;
 }
 
 .ti-title {
-    font-size: 22px;
-    font-weight: 800;
-    color: #0f172a;
+    font-family: "Oswald", "Inter", sans-serif;
+    font-weight: 600;
+    font-size: clamp(24px, 3.6vw, 33px);
+    text-transform: uppercase;
+    letter-spacing: 0.005em;
+    color: var(--ink);
+    margin: 0;
+    line-height: 1.2;
 }
 
 .ti-badges {
     display: flex;
-    gap: 8px;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
 }
 
+/* ---------- Grid ---------- */
 .ti-grid {
     display: grid;
     grid-template-columns: 2fr 1fr;
-    gap: 18px;
+    gap: 24px;
+    align-items: start;
 }
 
 .ti-main,
 .ti-side {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 22px;
 }
 
+.ti-side {
+    position: sticky;
+    top: 20px;
+}
+
+/* ---------- Cards ---------- */
 .ti-card {
-    background: white;
-    border-radius: 16px;
-    padding: 20px;
-    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 30px;
+    box-shadow: var(--shadow-sm);
+    animation: ti-fade-up 0.55s ease 0.1s both;
+    transition: box-shadow 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+}
+
+.ti-card:hover {
+    box-shadow: var(--shadow-md);
+    border-color: var(--line-strong);
+    transform: translateY(-2px);
 }
 
 .ti-card h3 {
-    font-size: 14px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 13px;
     font-weight: 700;
-    color: #1e293b;
-    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--amber-deep);
+    margin: 0 0 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed var(--line-strong);
 }
 
 .ti-card p {
-    font-size: 13.5px;
-    color: #475569;
-    line-height: 1.6;
+    font-size: 16px;
+    color: var(--ink-soft);
+    line-height: 1.75;
+    margin: 0 0 12px;
 }
 
+.ti-card p:last-child {
+    margin-bottom: 0;
+}
+
+.ti-card p strong {
+    color: var(--ink);
+    font-weight: 700;
+}
+
+/* ---------- Evidence ---------- */
 .ti-evidence-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-    gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 14px;
+}
+
+.ti-evidence-item {
+    display: block;
+    position: relative;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-sm);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    animation: ti-fade-in 0.5s ease both;
+}
+
+.ti-evidence-item::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 60%, rgba(32, 26, 16, 0.35) 100%);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+}
+
+.ti-evidence-item:hover {
+    border-color: var(--amber);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-3px);
+}
+
+.ti-evidence-item:hover::after {
+    opacity: 1;
 }
 
 .ti-evidence-item img {
+    display: block;
     width: 100%;
-    height: 90px;
+    height: 120px;
     object-fit: cover;
-    border-radius: 10px;
+    transition: transform 0.35s ease;
 }
 
+.ti-evidence-item:hover img {
+    transform: scale(1.1);
+}
+
+/* ---------- Side labels ---------- */
 .ti-side-label {
-    font-size: 14px;
+    font-size: 17px;
     font-weight: 700;
-    color: #1e293b;
+    color: var(--ink);
+    margin: 0;
 }
 
 .ti-side-sub {
-    font-size: 12px;
-    color: #94a3b8;
-    margin-top: 2px;
+    font-size: 13.5px;
+    color: var(--graphite-soft);
+    margin-top: 6px;
+    font-family: "JetBrains Mono", monospace;
 }
 
+/* ---------- Action buttons ---------- */
 .ti-action-btn {
+    position: relative;
     width: 100%;
-    height: 46px;
-    border-radius: 12px;
+    height: 54px;
+    border-radius: var(--radius-md);
     font-weight: 700;
-    font-size: 14px;
+    font-size: 15px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
     cursor: pointer;
-    border: none;
+    overflow: hidden;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.18s ease, box-shadow 0.18s ease;
+    animation: ti-fade-up 0.55s ease 0.15s both;
 }
 
 .ti-start-btn {
-    background: linear-gradient(135deg, #2563eb, #0d9488);
-    color: white;
+    background: var(--ink);
+    color: #fff;
+    border: none;
+    box-shadow: var(--shadow-sm);
+}
+
+.ti-start-btn:hover:not(:disabled) {
+    background: var(--amber-deep);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
 }
 
 .ti-waiting-btn {
-    background: #fff7ed;
-    color: #ea580c;
-    border: 1.5px solid #ea580c;
+    background: var(--amber-tint);
+    color: var(--amber-ink);
+    border: 1.5px solid var(--amber);
+}
+
+.ti-waiting-btn:hover:not(:disabled) {
+    background: var(--amber);
+    color: var(--ink);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.ti-action-btn:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.ti-action-btn:focus-visible {
+    outline: 2px solid var(--amber);
+    outline-offset: 2px;
 }
 
 .ti-action-btn:disabled {
     opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
 }
 
+/* ---------- Resolved card ---------- */
 .ti-resolved-card {
-    border-left: 4px solid #16a34a;
+    border-left: 4px solid var(--success);
+    background: linear-gradient(180deg, var(--success-tint) 0%, var(--surface) 140px);
+}
+
+.ti-resolved-card h3 {
+    color: var(--success);
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+    .ti-page {
+        padding: 28px 26px 60px;
+        font-size: 15.5px;
+    }
+
+    .ti-card {
+        padding: 26px;
+    }
 }
 
 @media (max-width: 900px) {
     .ti-grid {
         grid-template-columns: 1fr;
+    }
+
+    .ti-side {
+        position: static;
+    }
+}
+
+@media (max-width: 640px) {
+    .ti-page {
+        padding: 22px 16px 48px;
+    }
+
+    .ti-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .ti-card {
+        padding: 22px;
+    }
+
+    .ti-card p {
+        font-size: 15px;
+    }
+
+    .ti-evidence-grid {
+        grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+        gap: 12px;
+    }
+
+    .ti-evidence-item img {
+        height: 96px;
+    }
+}
+
+@media (max-width: 420px) {
+    .ti-back-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .ti-title {
+        font-size: 21px;
+    }
+
+    .ti-card {
+        padding: 18px;
+    }
+
+    .ti-action-btn {
+        height: 50px;
+        font-size: 14px;
     }
 }

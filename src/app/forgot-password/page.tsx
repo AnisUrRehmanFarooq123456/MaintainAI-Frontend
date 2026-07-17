@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 import { FaEnvelope } from "react-icons/fa";
 import AuthShell from "../../components/auth/AuthShell";
+import "./forgot-password.css";
 
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|net|org|edu|gov)$/;
 
@@ -68,6 +69,22 @@ export default function ForgotPasswordPage() {
     }
   };
 
+  const goBack = async () => {
+    const result = await Swal.fire({
+      icon: "warning",
+      title: "Are you sure you want to cancel?",
+      text: "You'll be taken back to the login page.",
+      showCancelButton: true,
+      confirmButtonText: "Yes, cancel",
+      cancelButtonText: "Stay here",
+      reverseButtons: true,
+    });
+
+    if (result.isConfirmed) {
+      router.push("/login");
+    }
+  };
+
   return (
     <AuthShell
       title="Forgot Your Password?"
@@ -94,9 +111,19 @@ export default function ForgotPasswordPage() {
             />
           </div>
         </div>
-        <button type="submit" disabled={loading} className="submit-btn">
-          {loading ? "Sending OTP..." : "Send OTP"}
-        </button>
+        <div className="auth-actions">
+          <button
+            type="button"
+            onClick={goBack}
+            disabled={loading}
+            className="cancel-btn"
+          >
+            Back
+          </button>
+          <button type="submit" disabled={loading} className="submit-btn">
+            {loading ? "Sending OTP..." : "Send OTP"}
+          </button>
+        </div>
       </form>
     </AuthShell>
   );

@@ -43,6 +43,7 @@ type DashboardStats = {
     nextServiceDate: string;
   }[];
   mostFrequentAssets: {
+    _id: string;
     assetName: string;
     assetCode: string;
     issueCount: number;
@@ -210,14 +211,18 @@ export default function AdminDashboardPage() {
           {stats.mostFrequentAssets.length === 0 && (
             <p className="queue-empty">No issue history yet</p>
           )}
-          {stats.mostFrequentAssets.map((asset, i) => (
-            <div className="queue-row" key={i}>
+          {stats.mostFrequentAssets.map((asset) => (
+            <Link
+              href={`/admin/assets/${asset._id}`}
+              key={asset._id}
+              className="queue-row"
+            >
               <div>
                 <p className="queue-row-title">{asset.assetName}</p>
                 <p className="queue-row-sub">{asset.assetCode}</p>
               </div>
               <span className="queue-count">{asset.issueCount} issues</span>
-            </div>
+            </Link>
           ))}
         </div>
       </div>

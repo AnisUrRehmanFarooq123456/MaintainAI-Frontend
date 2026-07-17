@@ -14,6 +14,7 @@ import {
   FaShieldAlt,
 } from "react-icons/fa";
 import AuthShell from "../../components/auth/AuthShell";
+import "./signup.css";
 
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|net|org|edu|gov)$/;
 const PHONE_REGEX = /^03[0-9]{9}$/;
@@ -247,7 +248,7 @@ export default function SignupPage() {
 
         <div className="input-group">
           <label>Account Type</label>
-          <div className="input-field">
+          <div className="input-field select-field">
             <FaShieldAlt className="field-icon" />
             <select
               name="userRole"

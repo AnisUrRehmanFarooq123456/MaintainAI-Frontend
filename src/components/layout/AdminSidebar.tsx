@@ -26,7 +26,7 @@ const NAV_ITEMS = [
     label: "Scheduled Maintenance",
     icon: FaCalendarCheck,
   },
-  { href: "/admin/technicians", label: "Technicians", icon: FaUserCog },
+  { href: "/admin/technicians", label: "Users", icon: FaUserCog },
   { href: "/admin/analytics", label: "Analytics", icon: FaChartBar },
   { href: "/admin/notifications", label: "Notifications", icon: FaBell },
 ];

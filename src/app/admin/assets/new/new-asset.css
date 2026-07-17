@@ -1,79 +1,427 @@
-.new-asset-page {
-    max-width: 640px;
+@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap");
+
+:root {
+  --ink: #201a10;
+  --ink-soft: #2c2416;
+  --graphite: #6b6255;
+  --graphite-soft: #9a917f;
+  --paper: #faf7f0;
+  --surface: #ffffff;
+  --line: #e9e3d5;
+  --line-strong: #ddd4bf;
+
+  --amber: #f0a622;
+  --amber-deep: #cf8a12;
+  --amber-ink: #7a4e0a;
+  --amber-tint: #fdf0d4;
+
+  --critical: #c8503a;
+  --critical-tint: #fbe6e1;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+
+  --shadow-sm: 0 1px 2px rgba(32, 26, 16, 0.07);
+  --shadow-md: 0 6px 20px rgba(32, 26, 16, 0.1);
+  --shadow-lg: 0 20px 50px rgba(32, 26, 16, 0.16);
 }
 
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+@keyframes na-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes na-pulse-btn {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.72;
+  }
+}
+
+@keyframes na-pulse-dot {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(240, 166, 34, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(240, 166, 34, 0);
+  }
+}
+
+/* ==========================================================================
+   Page shell — centers the whole title + subtitle + form group in the
+   middle of the viewport, matching the auth pages' composed layout.
+   ========================================================================== */
+.new-asset-page {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding: 48px 24px;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: var(--ink);
+  background: var(--paper);
+  overflow-x: hidden;
+}
+
+/* faint drafting grid, same device used across the app's other pages */
+.new-asset-page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 52px 52px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 35%, black 30%, transparent 85%);
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.new-asset-page::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--amber) 0%, rgba(240, 166, 34, 0.15) 45%, transparent 70%);
+}
+
+.new-asset-title,
+.new-asset-subtitle,
+.new-asset-form {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 640px;
+}
+
+/* ---------- Header ---------- */
 .new-asset-title {
-    font-size: 22px;
-    font-weight: 800;
-    color: #0f172a;
+  font-family: "Oswald", "Inter", sans-serif;
+  font-size: clamp(22px, 2.8vw, 28px);
+  font-weight: 600;
+  letter-spacing: 0.005em;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  animation: na-fade-up 0.5s ease both;
+}
+
+.new-asset-title::before {
+  content: "";
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+  background: var(--amber);
+  margin-right: 10px;
+  flex-shrink: 0;
+  animation: na-pulse-dot 2.4s ease infinite;
 }
 
 .new-asset-subtitle {
-    color: #64748b;
-    font-size: 13px;
-    margin-bottom: 24px;
+  font-family: "JetBrains Mono", monospace;
+  color: var(--amber-deep);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  margin: 8px 0 24px;
+  padding-left: 19px;
+  animation: na-fade-up 0.5s ease 0.05s both;
 }
 
+/* ---------- Form card ---------- */
 .new-asset-form {
-    background: white;
-    border-radius: 18px;
-    padding: 28px;
-    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 30px;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  animation: na-fade-up 0.55s ease 0.1s both;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+}
+
+.new-asset-form:hover {
+  box-shadow: var(--shadow-lg);
+  border-color: var(--line-strong);
+}
+
+/* a quiet blueprint accent, top-left corner of the card */
+.new-asset-form::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  width: 34px;
+  height: 34px;
+  border-top: 2px solid var(--amber);
+  border-left: 2px solid var(--amber);
+  border-top-left-radius: var(--radius-lg);
+  pointer-events: none;
+  transition: width 0.3s ease, height 0.3s ease;
+}
+
+.new-asset-form:hover::before {
+  width: 44px;
+  height: 44px;
 }
 
 .new-asset-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 18px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.new-asset-group {
+  animation: na-fade-up 0.5s ease both;
 }
 
 .new-asset-group label {
-    display: block;
-    font-size: 13px;
-    font-weight: 600;
-    color: #334155;
-    margin-bottom: 6px;
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--graphite);
+  margin-bottom: 7px;
+  transition: color 0.2s ease;
+}
+
+.new-asset-group:focus-within label {
+  color: var(--amber-ink);
 }
 
 .new-asset-group input,
 .new-asset-group select {
-    width: 100%;
-    height: 44px;
-    border: 1.5px solid #e2e8f0;
-    border-radius: 10px;
-    padding: 0 14px;
-    font-size: 13.5px;
-    outline: none;
-    background: #f8fafc;
+  width: 100%;
+  height: 44px;
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 0 14px;
+  font-size: 13.5px;
+  font-family: "Inter", sans-serif;
+  color: var(--ink);
+  outline: none;
+  background: var(--paper);
+  transition: border-color 0.22s ease, background-color 0.22s ease, box-shadow 0.22s ease, transform 0.18s ease;
+}
+
+.new-asset-group input:hover,
+.new-asset-group select:hover {
+  border-color: var(--amber-deep);
+  background: var(--amber-tint);
+}
+
+.new-asset-group input::placeholder {
+  color: var(--graphite-soft);
 }
 
 .new-asset-group input:focus,
 .new-asset-group select:focus {
-    border-color: #2563eb;
-    background: white;
+  border-color: var(--amber);
+  background: var(--surface);
+  box-shadow: 0 0 0 4px rgba(240, 166, 34, 0.16);
+  transform: translateY(-1px);
 }
 
-.new-asset-submit {
-    height: 46px;
-    border: none;
-    border-radius: 12px;
-    background: linear-gradient(135deg, #2563eb, #0d9488);
-    color: white;
-    font-weight: 700;
-    font-size: 14px;
-    cursor: pointer;
-    margin-top: 6px;
+.new-asset-group select {
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 34px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23cf8a12' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 14px;
+  transition: border-color 0.22s ease, background-color 0.22s ease, box-shadow 0.22s ease, transform 0.2s ease;
 }
 
-.new-asset-submit:disabled {
-    opacity: 0.6;
+.new-asset-group select:hover {
+  transform: translateY(-1px);
+}
+
+.new-asset-group input[type="date"] {
+  cursor: pointer;
+}
+
+.new-asset-group input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  filter: invert(48%) sepia(60%) saturate(700%) hue-rotate(0deg);
+  opacity: 0.75;
+  transition: opacity 0.2s ease;
+}
+
+.new-asset-group input[type="date"]:hover::-webkit-calendar-picker-indicator {
+  opacity: 1;
+}
+
+/* ---------- Buttons ---------- */
+.cancel-submit {
+  display: flex;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.asset-btn {
+  position: relative;
+  flex: 1;
+  height: 46px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 13.5px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.asset-btn:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 2px;
+}
+
+/* Cancel (first button): quiet outline style */
+.cancel-submit .asset-btn:first-child {
+  background: var(--surface);
+  border: 1.5px solid var(--line-strong);
+  color: var(--graphite);
+}
+
+.cancel-submit .asset-btn:first-child:hover:not(:disabled) {
+  background: var(--critical-tint);
+  border-color: var(--critical);
+  color: var(--critical);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.cancel-submit .asset-btn:first-child:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* Register (second button): primary ink fill with hazard-stripe edge,
+   same DNA as the other primary CTAs across the app */
+.cancel-submit .asset-btn:last-child {
+  border: none;
+  background: var(--ink);
+  color: #fff;
+  box-shadow: var(--shadow-sm);
+}
+
+.cancel-submit .asset-btn:last-child::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background: repeating-linear-gradient(-45deg, var(--amber) 0 6px, var(--ink-soft) 6px 12px);
+  transform: translateY(3px);
+  transition: transform 0.2s ease;
+}
+
+.cancel-submit .asset-btn:last-child:hover:not(:disabled) {
+  background: var(--ink-soft);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.cancel-submit .asset-btn:last-child:hover:not(:disabled)::after {
+  transform: translateY(0);
+}
+
+.cancel-submit .asset-btn:last-child:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.asset-btn:disabled {
+  cursor: not-allowed;
+  box-shadow: none;
+  animation: na-pulse-btn 1.6s ease infinite;
+}
+
+.cancel-submit .asset-btn:first-child:disabled {
+  background: var(--paper);
+  color: var(--graphite-soft);
+  border-color: var(--line);
+}
+
+.cancel-submit .asset-btn:last-child:disabled {
+  background: var(--graphite-soft);
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+@media (max-width: 720px) {
+  .new-asset-page {
+    padding: 40px 20px;
+  }
 }
 
 @media (max-width: 600px) {
-    .new-asset-row {
-        grid-template-columns: 1fr;
-    }
+  .new-asset-row {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .new-asset-page {
+    padding: 28px 14px;
+  }
+
+  .new-asset-form {
+    padding: 22px 18px;
+  }
+
+  .new-asset-title {
+    font-size: 19px;
+  }
+
+  .new-asset-subtitle {
+    font-size: 11px;
+    margin-bottom: 20px;
+  }
+
+  .cancel-submit {
+    flex-direction: column-reverse;
+  }
+
+  .asset-btn {
+    height: 44px;
+  }
 }

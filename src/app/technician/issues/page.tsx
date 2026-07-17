@@ -1,9 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   FaSearch,
+  FaFilter,
+  FaTimes,
   FaClipboardList,
   FaSpinner,
   FaCheckCircle,
@@ -17,22 +20,38 @@ import PriorityBadge from "../../../components/ui/PriorityBadge";
 import StatCard from "../../../components/dashboard/StatCard";
 import "./issues.css";
 
-const STATUSES = [
-  "Assigned",
-  "Inspection Started",
-  "Maintenance In Progress",
-  "Waiting for Parts",
-  "Resolved",
-  "Closed",
+// Fields the user can filter by — mirrors the table headings.
+const FILTER_FIELDS: { key: string; label: string }[] = [
+  { key: "asset", label: "Asset" },
+  { key: "title", label: "Title" },
+  { key: "priority", label: "Priority" },
+  { key: "status", label: "Status" },
 ];
 
+const getFieldValue = (issue: Issue, fieldKey: string): string => {
+  switch (fieldKey) {
+    case "asset":
+      return issue.asset?.name || "Unassigned";
+    case "title":
+      return issue.title || "";
+    case "priority":
+      return issue.priority || "";
+    case "status":
+      return issue.status || "";
+    default:
+      return "";
+  }
+};
+
 export default function TechnicianIssuesPage() {
+  const router = useRouter();
   const [allIssues, setAllIssues] = useState<Issue[]>([]);
   const [issues, setIssues] = useState<Issue[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState("");
+  const [filterField, setFilterField] = useState("");
+  const [filterValue, setFilterValue] = useState("");
   const user = getUser();
 
   const loadIssues = async () => {
@@ -54,16 +73,40 @@ export default function TechnicianIssuesPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Distinct values available for whichever field is currently selected,
+  // e.g. selecting "Asset" surfaces every unique asset name in the list.
+  const filterValueOptions = useMemo(() => {
+    if (!filterField) return [];
+    const values = new Set<string>();
+    allIssues.forEach((issue) => {
+      const value = getFieldValue(issue, filterField);
+      if (value) values.add(value);
+    });
+    return Array.from(values).sort((a, b) => a.localeCompare(b));
+  }, [allIssues, filterField]);
+
+  // Live filtering: re-runs on every keystroke (including deletions) and
+  // whenever either dropdown changes.
   useEffect(() => {
     let filtered = allIssues;
-    if (statusFilter)
-      filtered = filtered.filter((i) => i.status === statusFilter);
-    if (search)
-      filtered = filtered.filter((i) =>
-        i.title.toLowerCase().includes(search.toLowerCase()),
+
+    if (filterField && filterValue) {
+      filtered = filtered.filter(
+        (issue) => getFieldValue(issue, filterField) === filterValue,
       );
+    }
+
+    if (search.trim()) {
+      const q = search.trim().toLowerCase();
+      filtered = filtered.filter((issue) => {
+        const title = issue.title?.toLowerCase() || "";
+        const asset = issue.asset?.name?.toLowerCase() || "";
+        return title.includes(q) || asset.includes(q);
+      });
+    }
+
     setIssues(filtered);
-  }, [allIssues, statusFilter, search]);
+  }, [allIssues, search, filterField, filterValue]);
 
   const inProgressCount = allIssues.filter((i) =>
     [
@@ -79,6 +122,23 @@ export default function TechnicianIssuesPage() {
     (i) =>
       i.priority === "Critical" && !["Resolved", "Closed"].includes(i.status),
   ).length;
+
+  const handleFieldChange = (value: string) => {
+    setFilterField(value);
+    setFilterValue("");
+  };
+
+  const handleClearFilters = () => {
+    setFilterField("");
+    setFilterValue("");
+    setSearch("");
+  };
+
+  const hasActiveFilters = Boolean(search || filterField);
+
+  const handleRowClick = (id: string) => {
+    router.push(`/technician/issues/${id}`);
+  };
 
   return (
     <div className="tech-issues-page">
@@ -119,23 +179,56 @@ export default function TechnicianIssuesPage() {
           <FaSearch />
           <input
             type="text"
-            placeholder="Search by title..."
+            placeholder="Search by title or asset..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
-        <select
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-          className="tech-issues-filter-select"
-        >
-          <option value="">All Statuses</option>
-          {STATUSES.map((s) => (
-            <option key={s} value={s}>
-              {s}
+
+        <div className="tech-issues-filter-group">
+          <FaFilter className="tech-issues-filter-icon" />
+
+          <select
+            value={filterField}
+            onChange={(e) => handleFieldChange(e.target.value)}
+            className="tech-issues-filter-select"
+          >
+            <option value="">Filter By...</option>
+            {FILTER_FIELDS.map((f) => (
+              <option key={f.key} value={f.key}>
+                {f.label}
+              </option>
+            ))}
+          </select>
+
+          <select
+            value={filterValue}
+            onChange={(e) => setFilterValue(e.target.value)}
+            className="tech-issues-filter-select"
+            disabled={!filterField}
+          >
+            <option value="">
+              {filterField
+                ? `All ${FILTER_FIELDS.find((f) => f.key === filterField)?.label}`
+                : "Select a field first"}
             </option>
-          ))}
-        </select>
+            {filterValueOptions.map((value) => (
+              <option key={value} value={value}>
+                {value}
+              </option>
+            ))}
+          </select>
+
+          {hasActiveFilters && (
+            <button
+              type="button"
+              className="tech-issues-clear-btn"
+              onClick={handleClearFilters}
+            >
+              <FaTimes /> Clear
+            </button>
+          )}
+        </div>
       </div>
 
       {loading && <p className="tech-issues-loading">Loading issues...</p>}
@@ -163,8 +256,12 @@ export default function TechnicianIssuesPage() {
                   </td>
                 </tr>
               )}
-              {issues.map((issue) => (
-                <tr key={issue._id}>
+              {issues.map((issue, index) => (
+                <tr
+                  key={issue._id}
+                  onClick={() => handleRowClick(issue._id)}
+                  style={{ animationDelay: `${Math.min(index, 10) * 30}ms` }}
+                >
                   <td className="tech-issues-number">{issue.issueNumber}</td>
                   <td>{issue.asset?.name || "—"}</td>
                   <td className="tech-issues-title-cell">{issue.title}</td>
@@ -181,6 +278,7 @@ export default function TechnicianIssuesPage() {
                     <Link
                       href={`/technician/issues/${issue._id}`}
                       className="tech-issues-open-btn"
+                      onClick={(e) => e.stopPropagation()}
                     >
                       Open
                     </Link>

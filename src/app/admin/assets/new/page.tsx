@@ -45,7 +45,28 @@ export default function NewAssetPage() {
     }
     return true;
   };
+  const handleCancel = async () => {
+    const result = await Swal.fire({
+      title: "Cancel Registration?",
+      text: "Any unsaved changes will be lost.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, Cancel",
+      cancelButtonText: "Continue Editing",
+      reverseButtons: true,
+    });
 
+    if (result.isConfirmed) {
+      await Swal.fire({
+        icon: "success",
+        title: "Registration Cancelled",
+        showConfirmButton: false,
+        timer: 1000,
+      });
+
+      router.push("/admin/assets");
+    }
+  };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
@@ -151,9 +172,20 @@ export default function NewAssetPage() {
           </div>
         </div>
 
-        <button type="submit" disabled={loading} className="new-asset-submit">
-          {loading ? "Registering..." : "Register Asset"}
-        </button>
+        <div className="cancel-submit">
+          <button
+            type="button"
+            disabled={loading}
+            className="asset-btn"
+            onClick={handleCancel}
+          >
+            {loading ? "Please wait..." : "Cancel"}
+          </button>
+
+          <button type="submit" disabled={loading} className="asset-btn">
+            {loading ? "Registering..." : "Register Asset"}
+          </button>
+        </div>
       </form>
     </div>
   );

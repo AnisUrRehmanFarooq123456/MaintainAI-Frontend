@@ -11,7 +11,8 @@ import {
   FaUserCircle,
   FaSignOutAlt,
   FaUserCog,
-  FaExclamationTriangle
+  FaExclamationTriangle,
+  FaBell
 } from "react-icons/fa";
 import Swal from "sweetalert2";
 import "./TechnicianSlideBar.css";
@@ -32,6 +33,7 @@ const NAV_ITEMS: NavItem[] = [
     icon: <FaCalendarAlt />,
   },
   { href: "/technician/technicians", label: "Technicians", icon: <FaUserCog /> },
+  { href: "/technician/notifications", label: "Notifications", icon: <FaBell /> },
   { href: "/technician/profile", label: "Profile", icon: <FaUserCircle /> },
 ];
 
@@ -77,7 +79,7 @@ export default function TechnicianSideBar({
     <aside className="sidebar">
       <div className="sidebar-brand">
         <FaTools />
-        <span>My App</span>
+        <span>MaintainIQ</span>
       </div>
 
       <nav className="sidebar-nav">

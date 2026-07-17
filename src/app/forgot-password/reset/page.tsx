@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FaLock, FaKey, FaEye, FaEyeSlash } from "react-icons/fa";
 import AuthShell from "../../../components/auth/AuthShell";
+import "./reset.css";
 
 export default function ResetPasswordPage() {
   const router = useRouter();
@@ -85,6 +86,22 @@ export default function ResetPasswordPage() {
     }
   };
 
+  const goBack = async () => {
+    const result = await Swal.fire({
+      icon: "warning",
+      title: "Are you sure you want to cancel?",
+      text: "You'll be taken back to the login page and will need to request a new code later.",
+      showCancelButton: true,
+      confirmButtonText: "Yes, cancel",
+      cancelButtonText: "Stay here",
+      reverseButtons: true,
+    });
+
+    if (result.isConfirmed) {
+      router.push("/login");
+    }
+  };
+
   return (
     <AuthShell
       title="Enter Your Reset Code"
@@ -146,9 +163,19 @@ export default function ResetPasswordPage() {
           </div>
         </div>
 
-        <button type="submit" disabled={loading} className="submit-btn">
-          {loading ? "Resetting..." : "Reset Password"}
-        </button>
+        <div className="auth-actions">
+          <button
+            type="button"
+            onClick={goBack}
+            disabled={loading}
+            className="cancel-btn"
+          >
+            Cancel
+          </button>
+          <button type="submit" disabled={loading} className="submit-btn">
+            {loading ? "Resetting..." : "Reset Password"}
+          </button>
+        </div>
       </form>
     </AuthShell>
   );

@@ -1,101 +1,456 @@
+@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap");
+
 .report-issue-page {
+    --ink: #201a10;
+    --ink-soft: #2c2416;
+    --graphite: #6b6255;
+    --graphite-soft: #9a917f;
+    --paper: #faf7f0;
+    --surface: #ffffff;
+    --line: #e9e3d5;
+    --line-strong: #ddd4bf;
+
+    --amber: #f0a622;
+    --amber-deep: #cf8a12;
+    --amber-ink: #7a4e0a;
+    --amber-tint: #fdf0d4;
+
+    --critical: #c8503a;
+    --success: #3f7d4a;
+
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 16px;
+    --radius-xl: 22px;
+
+    --shadow-sm: 0 1px 2px rgba(32, 26, 16, 0.07);
+    --shadow-md: 0 6px 20px rgba(32, 26, 16, 0.1);
+    --shadow-lg: 0 20px 50px rgba(32, 26, 16, 0.16);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .report-issue-page * {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+.report-issue-page * {
+    box-sizing: border-box;
+}
+
+/* ==========================================================================
+   Page shell
+   ========================================================================== */
+.report-issue-page {
+    position: relative;
     min-height: 100vh;
-    background: linear-gradient(135deg, #eff6ff, #ecfeff, #f0fdfa);
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color: var(--ink);
+    background: var(--paper);
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 20px;
+    padding: 48px 20px;
+    overflow-x: hidden;
 }
 
+/* faint grid + amber wash, echoing the hero treatment in home.css */
+.report-issue-page::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(var(--line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse 70% 55% at 50% 0%, black 30%, transparent 85%);
+    opacity: 0.55;
+    pointer-events: none;
+}
+
+.report-issue-page::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--amber) 0%, rgba(240, 166, 34, 0.15) 45%, transparent 70%);
+    pointer-events: none;
+}
+
+/* ==========================================================================
+   Card
+   ========================================================================== */
 .report-issue-card {
-    background: white;
-    border-radius: 24px;
-    padding: 32px;
+    position: relative;
+    z-index: 1;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-xl);
+    padding: 34px 30px 30px;
     width: 100%;
-    max-width: 500px;
-    box-shadow: 0 25px 60px rgba(15, 23, 42, 0.15);
+    max-width: 520px;
+    box-shadow: var(--shadow-lg);
+    animation: ri-fade-in-scale 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes ri-fade-in-scale {
+    from {
+        opacity: 0;
+        transform: translateY(22px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 .report-issue-title {
-    font-size: 22px;
-    font-weight: 800;
-    color: #0f172a;
+    font-family: "Oswald", "Inter", sans-serif;
+    font-weight: 600;
+    font-size: clamp(21px, 3vw, 25px);
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+    color: var(--ink);
     text-align: center;
+    margin: 0;
+    animation: ri-fade-up 0.6s ease 0.05s both;
 }
 
 .report-issue-subtitle {
     text-align: center;
-    color: #94a3b8;
-    font-size: 12.5px;
-    margin-bottom: 22px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--amber-ink);
+    background: var(--amber-tint);
+    border: 1px solid #f0dcab;
+    border-radius: 999px;
+    display: inline-flex;
+    padding: 5px 13px;
+    margin: 12px auto 26px;
+    width: fit-content;
+    animation: ri-fade-up 0.6s ease 0.12s both;
 }
 
+/* center the pill under the title */
+.report-issue-subtitle {
+    display: flex;
+    justify-content: center;
+}
+
+@keyframes ri-fade-up {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ==========================================================================
+   Fields
+   ========================================================================== */
 .report-issue-field {
-    margin-bottom: 16px;
+    margin-bottom: 18px;
+    animation: ri-fade-up 0.6s ease 0.16s both;
 }
 
 .report-issue-field label {
     display: block;
-    font-size: 13px;
-    font-weight: 600;
-    color: #334155;
-    margin-bottom: 6px;
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--ink-soft);
+    margin-bottom: 7px;
 }
 
 .report-issue-field textarea,
 .report-issue-field input {
     width: 100%;
-    border: 1.5px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 10px 14px;
+    border: 1.5px solid var(--line-strong);
+    border-radius: var(--radius-md);
+    padding: 11px 14px;
     font-size: 13.5px;
-    outline: none;
-    background: #f8fafc;
     font-family: inherit;
+    color: var(--ink);
+    outline: none;
+    background: var(--paper);
+    transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+}
+
+.report-issue-field textarea::placeholder,
+.report-issue-field input::placeholder {
+    color: var(--graphite-soft);
+}
+
+.report-issue-field textarea:hover,
+.report-issue-field input:hover {
+    border-color: var(--graphite-soft);
 }
 
 .report-issue-field textarea:focus,
 .report-issue-field input:focus {
-    border-color: #2563eb;
-    background: white;
+    border-color: var(--amber);
+    background: var(--surface);
+    box-shadow: 0 0 0 4px rgba(240, 166, 34, 0.16);
 }
 
+.report-issue-field textarea {
+    resize: vertical;
+    min-height: 96px;
+    line-height: 1.55;
+}
+
+/* ==========================================================================
+   AI suggestion button — mirrors the .lp-cta diagonal-stripe treatment,
+   but in an outlined "secondary" form
+   ========================================================================== */
 .report-issue-ai-btn {
-    margin-top: 10px;
+    position: relative;
+    margin-top: 4px;
     width: 100%;
-    height: 42px;
-    border: 1.5px solid #2563eb;
-    background: white;
-    color: #2563eb;
-    border-radius: 12px;
+    height: 44px;
+    border: 1.5px solid var(--amber-deep);
+    background: var(--amber-tint);
+    color: var(--amber-ink);
+    border-radius: var(--radius-md);
     font-weight: 700;
     font-size: 13px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
     cursor: pointer;
+    overflow: hidden;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+.report-issue-ai-btn:hover:not(:disabled) {
+    background: var(--ink);
+    color: var(--amber);
+    border-color: var(--ink);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.report-issue-ai-btn:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.report-issue-ai-btn:focus-visible {
+    outline: 2px solid var(--amber);
+    outline-offset: 2px;
+}
+
+.report-issue-ai-btn::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3px;
+    background: repeating-linear-gradient(-45deg, var(--amber) 0 6px, var(--ink) 6px 12px);
+    transform: translateY(3px);
+    transition: transform 0.2s ease;
+}
+
+.report-issue-ai-btn:hover:not(:disabled)::after {
+    transform: translateY(0);
 }
 
 .report-issue-ai-btn:disabled {
     opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
 }
 
+/* subtle "thinking" shimmer while AI is analyzing (button text reads
+   "Analyzing..." while disabled during that state) */
+.report-issue-ai-btn:disabled {
+    background: linear-gradient(90deg, var(--amber-tint) 25%, #f7e4b8 50%, var(--amber-tint) 75%);
+    background-size: 200% 100%;
+    animation: ri-shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes ri-shimmer {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* ==========================================================================
+   Row layout (name / contact)
+   ========================================================================== */
 .report-issue-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 12px;
+    gap: 14px;
 }
 
-.report-issue-submit-btn {
+/* ==========================================================================
+   Actions row — Cancel (left) + Submit Issue (right)
+   ========================================================================== */
+.report-issue-actions {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 12px;
+    margin-top: 8px;
+    animation: ri-fade-up 0.6s ease 0.2s both;
+}
+
+/* ==========================================================================
+   Cancel button — outlined secondary action, goes back two history entries
+   ========================================================================== */
+.report-issue-cancel-btn {
+    position: relative;
     width: 100%;
-    height: 48px;
-    border: none;
-    border-radius: 14px;
-    background: linear-gradient(135deg, #2563eb, #0d9488);
-    color: white;
-    font-weight: 700;
-    font-size: 15px;
+    height: 50px;
+    border: 1.5px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    color: var(--graphite);
+    font-weight: 600;
+    font-size: 14.5px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
     cursor: pointer;
-    margin-top: 6px;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.report-issue-cancel-btn:hover:not(:disabled) {
+    background: var(--paper);
+    border-color: var(--graphite-soft);
+    color: var(--ink);
+    transform: translateY(-2px);
+}
+
+.report-issue-cancel-btn:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.report-issue-cancel-btn:focus-visible {
+    outline: 2px solid var(--amber);
+    outline-offset: 2px;
+}
+
+.report-issue-cancel-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ==========================================================================
+   Submit button — primary CTA, matches .lp-cta exactly
+   ========================================================================== */
+.report-issue-submit-btn {
+    position: relative;
+    width: 100%;
+    height: 50px;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: var(--ink);
+    color: #fff;
+    font-weight: 600;
+    font-size: 14.5px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    cursor: pointer;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.2s ease;
+}
+
+.report-issue-submit-btn:hover:not(:disabled) {
+    background: var(--ink-soft);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.report-issue-submit-btn:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.report-issue-submit-btn:focus-visible {
+    outline: 2px solid var(--amber);
+    outline-offset: 2px;
+}
+
+.report-issue-submit-btn::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3px;
+    background: repeating-linear-gradient(-45deg, var(--amber) 0 6px, var(--ink-soft) 6px 12px);
+    transform: translateY(3px);
+    transition: transform 0.2s ease;
+}
+
+.report-issue-submit-btn:hover:not(:disabled)::after {
+    transform: translateY(0);
 }
 
 .report-issue-submit-btn:disabled {
     opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: var(--shadow-sm);
+}
+
+.report-issue-submit-btn:disabled::after {
+    transform: translateY(3px);
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+@media (max-width: 560px) {
+    .report-issue-page {
+        padding: 28px 14px;
+    }
+
+    .report-issue-card {
+        padding: 26px 20px 22px;
+        border-radius: var(--radius-lg);
+    }
+
+    .report-issue-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .report-issue-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .report-issue-ai-btn,
+    .report-issue-cancel-btn,
+    .report-issue-submit-btn {
+        height: 46px;
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 380px) {
+    .report-issue-card {
+        padding: 22px 16px 18px;
+    }
+
+    .report-issue-title {
+        font-size: 19px;
+    }
 }

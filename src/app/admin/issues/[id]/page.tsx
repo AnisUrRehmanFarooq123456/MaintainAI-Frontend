@@ -2,7 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import Link from "next/link";
 import Swal from "sweetalert2";
+import {
+  FaArrowLeft,
+  FaUser,
+  FaClock,
+  FaHistory,
+  FaLayerGroup,
+} from "react-icons/fa";
 import { apiFetch } from "../../../../utils/api";
 import IssueStatusBadge from "../../../../components/ui/IssueStatusBadge";
 import PriorityBadge from "../../../../components/ui/PriorityBadge";
@@ -125,6 +133,10 @@ export default function AdminIssueDetailPage() {
 
   return (
     <div className="issue-detail-page">
+      <Link href="/admin/issues" className="issue-back-btn">
+        <FaArrowLeft /> Back to Issues
+      </Link>
+
       <div className="issue-detail-header">
         <div>
           <p className="issue-detail-number">{issue.issueNumber}</p>
@@ -138,8 +150,73 @@ export default function AdminIssueDetailPage() {
 
       <div className="issue-detail-grid">
         <div className="issue-detail-main">
+          {/* Overview: the work-order summary block that fills the left column */}
+          <div className="issue-detail-card issue-overview-card">
+            <h3 className="issue-card-heading-lg">Work Order Overview</h3>
+            <div className="issue-overview-grid">
+              <div className="issue-overview-item">
+                <span className="issue-overview-label">
+                  <FaUser /> Reported By
+                </span>
+                <span className="issue-overview-value">
+                  {issue.reporterName || "Anonymous"}
+                </span>
+                {issue.reporterContact && (
+                  <span className="issue-overview-sub">
+                    {issue.reporterContact}
+                  </span>
+                )}
+              </div>
+
+              <div className="issue-overview-item">
+                <span className="issue-overview-label">
+                  <FaLayerGroup /> Priority
+                </span>
+                <span className="issue-overview-value">
+                  <PriorityBadge priority={issue.priority} />
+                </span>
+              </div>
+
+              <div className="issue-overview-item">
+                <span className="issue-overview-label">
+                  <FaLayerGroup /> Status
+                </span>
+                <span className="issue-overview-value">
+                  <IssueStatusBadge status={issue.status} />
+                </span>
+              </div>
+
+              <div className="issue-overview-item">
+                <span className="issue-overview-label">
+                  <FaLayerGroup /> Category
+                </span>
+                <span className="issue-overview-value">
+                  {issue.category || "—"}
+                </span>
+              </div>
+
+              <div className="issue-overview-item">
+                <span className="issue-overview-label">
+                  <FaClock /> Reported Time
+                </span>
+                <span className="issue-overview-value issue-overview-date">
+                  {new Date(issue.createdAt).toLocaleString()}
+                </span>
+              </div>
+
+              <div className="issue-overview-item">
+                <span className="issue-overview-label">
+                  <FaHistory /> Last Updated
+                </span>
+                <span className="issue-overview-value issue-overview-date">
+                  {new Date(issue.updatedAt).toLocaleString()}
+                </span>
+              </div>
+            </div>
+          </div>
+
           <div className="issue-detail-card">
-            <h3>Description</h3>
+            <h3 className="issue-card-heading-lg">Description</h3>
             <p className="issue-desc">{issue.description}</p>
           </div>
 
@@ -203,16 +280,6 @@ export default function AdminIssueDetailPage() {
             <p className="issue-side-sub">
               {issue.asset?.assetCode} · {issue.asset?.location}
             </p>
-          </div>
-
-          <div className="issue-detail-card">
-            <h3>Reporter</h3>
-            <p className="issue-side-label">
-              {issue.reporterName || "Anonymous"}
-            </p>
-            {issue.reporterContact && (
-              <p className="issue-side-sub">{issue.reporterContact}</p>
-            )}
           </div>
 
           <div className="issue-detail-card">

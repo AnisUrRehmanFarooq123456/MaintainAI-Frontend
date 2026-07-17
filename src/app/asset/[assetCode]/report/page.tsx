@@ -40,6 +40,14 @@ export default function ReportIssuePage() {
   const [aiAvailable, setAiAvailable] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
+  // Goes back two entries in the browser history (used by Cancel and
+  // after a successful submit) instead of pushing a hardcoded path.
+  const goBackTwice = () => {
+    if (typeof window !== "undefined") {
+      window.history.go(-2);
+    }
+  };
+
   const handleGetSuggestion = async () => {
     if (complaint.trim().length < 5) {
       Swal.fire({
@@ -51,6 +59,7 @@ export default function ReportIssuePage() {
       });
       return;
     }
+
     setTriageLoading(true);
     try {
       const res = await apiFetch("/api/triage/generate", {
@@ -58,11 +67,27 @@ export default function ReportIssuePage() {
         auth: false,
         body: { complaint },
       });
-      const data = res.data || EMPTY_SUGGESTION;
+
+      // Helpful while debugging — check the browser console / network tab
+      // to confirm what the backend actually returned.
+      console.log("[triage] response:", res);
+
+      if (!res || res.status === false) {
+        throw new Error(res?.message || "Triage request failed");
+      }
+
+      // Guard against a malformed / partial shape from the API so the
+      // review form never crashes on missing fields.
+      const data =
+        res.data && typeof res.data === "object"
+          ? { ...EMPTY_SUGGESTION, ...res.data }
+          : EMPTY_SUGGESTION;
+
       setSuggestion(data);
       setOriginalSuggestion(data);
-      setAiAvailable(res.aiAvailable);
-      if (!res.aiAvailable) {
+      setAiAvailable(res.aiAvailable !== false);
+
+      if (res.aiAvailable === false) {
         Swal.fire({
           icon: "info",
           title: "AI unavailable",
@@ -72,11 +97,18 @@ export default function ReportIssuePage() {
         });
       }
     } catch (err: any) {
+      console.error("[triage] error:", err);
       Swal.fire({
         icon: "error",
         title: "Failed to get AI suggestion",
-        text: err.message,
+        text: err?.message || "Something went wrong. Please try again.",
       });
+
+      // Don't leave the user stuck with no form — fall back to a blank,
+      // manually-editable suggestion so they can still submit the issue.
+      setSuggestion(EMPTY_SUGGESTION);
+      setOriginalSuggestion(EMPTY_SUGGESTION);
+      setAiAvailable(false);
     } finally {
       setTriageLoading(false);
     }
@@ -143,12 +175,13 @@ export default function ReportIssuePage() {
         showConfirmButton: false,
         timer: 2200,
       });
-      setTimeout(() => router.push(`/asset/${assetCode}`), 2200);
+      setTimeout(() => goBackTwice(), 2200);
     } catch (err: any) {
+      console.error("[report-issue] submit error:", err);
       Swal.fire({
         icon: "error",
         title: "Failed to submit",
-        text: err.message,
+        text: err?.message || "Something went wrong. Please try again.",
       });
     } finally {
       setSubmitting(false);
@@ -211,13 +244,23 @@ export default function ReportIssuePage() {
             <label>Evidence (optional)</label>
             <EvidenceUploader evidence={evidence} onChange={setEvidence} />
           </div>
-          <button
-            type="submit"
-            disabled={submitting || !suggestion}
-            className="report-issue-submit-btn"
-          >
-            {submitting ? "Submitting..." : "Submit Issue"}
-          </button>
+          <div className="report-issue-actions">
+            <button
+              type="button"
+              className="report-issue-cancel-btn"
+              onClick={goBackTwice}
+              disabled={submitting}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={submitting || !suggestion}
+              className="report-issue-submit-btn"
+            >
+              {submitting ? "Submitting..." : "Submit Issue"}
+            </button>
+          </div>
         </form>
       </div>
     </main>

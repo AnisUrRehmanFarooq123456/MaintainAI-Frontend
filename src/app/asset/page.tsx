@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import Link from "next/link";
-import { apiFetch } from "../../../utils/api";
-import StatusBadge from "../../../components/ui/StatusBadge";
-import "./public-asset.css";
+import { apiFetch } from "../../utils/api";
+import StatusBadge from "../../components/ui/StatusBadge";
+import "./asset.css";
 
 type PublicAsset = {
   name: string;
@@ -21,7 +21,6 @@ type PublicAsset = {
 
 export default function PublicAssetPage() {
   const params = useParams();
-  const router = useRouter();
   const [asset, setAsset] = useState<PublicAsset | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
@@ -42,10 +41,6 @@ export default function PublicAssetPage() {
     load();
   }, [params.assetCode]);
 
-  const goBack = () => {
-    router.back()
-  };
-
   if (loading)
     return <div className="public-asset-loading">Loading asset...</div>;
 
@@ -57,13 +52,6 @@ export default function PublicAssetPage() {
           This QR code doesn&apos;t match any registered asset. Please check
           with your facility team.
         </p>
-        <button
-          type="button"
-          className="public-asset-cancel-btn"
-          onClick={goBack}
-        >
-          Go Back
-        </button>
       </div>
     );
   }
@@ -103,37 +91,17 @@ export default function PublicAssetPage() {
         </div>
 
         {isRetired ? (
-          <>
-            <div className="public-asset-retired-notice">
-              This asset has been retired and is no longer in service. Issues
-              cannot be reported against it.
-            </div>
-            <div className="public-asset-actions public-asset-actions-single">
-              <button
-                type="button"
-                className="public-asset-cancel-btn"
-                onClick={goBack}
-              >
-                Cancel
-              </button>
-            </div>
-          </>
-        ) : (
-          <div className="public-asset-actions">
-            <button
-              type="button"
-              className="public-asset-cancel-btn"
-              onClick={goBack}
-            >
-              Cancel
-            </button>
-            <Link
-              href={`/asset/${asset.assetCode}/report`}
-              className="public-asset-report-btn"
-            >
-              Report an Issue
-            </Link>
+          <div className="public-asset-retired-notice">
+            This asset has been retired and is no longer in service. Issues
+            cannot be reported against it.
           </div>
+        ) : (
+          <Link
+            href={`/asset/${asset.assetCode}/report`}
+            className="public-asset-report-btn"
+          >
+            Report an Issue
+          </Link>
         )}
 
         {asset.recentActivity && asset.recentActivity.length > 0 && (

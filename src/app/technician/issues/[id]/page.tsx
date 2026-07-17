@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import Link from "next/link";
+import { FaArrowLeft } from "react-icons/fa";
 import Swal from "sweetalert2";
 import { apiFetch } from "../../../../utils/api";
 import IssueStatusBadge from "../../../../components/ui/IssueStatusBadge";
@@ -120,8 +122,18 @@ export default function TechnicianIssueDetailPage() {
     }
   };
 
-  if (loading) return <p className="ti-loading">Loading issue...</p>;
-  if (error) return <p className="ti-error">{error}</p>;
+  if (loading)
+    return (
+      <div className="ti-page">
+        <p className="ti-loading">Loading issue...</p>
+      </div>
+    );
+  if (error)
+    return (
+      <div className="ti-page">
+        <p className="ti-error">{error}</p>
+      </div>
+    );
   if (!issue) return null;
 
   const canStartInspection = issue.status === "Assigned";
@@ -137,6 +149,10 @@ export default function TechnicianIssueDetailPage() {
 
   return (
     <div className="ti-page">
+      <Link href="/technician/issues" className="ti-back-btn">
+        <FaArrowLeft /> Back to Issues
+      </Link>
+
       <div className="ti-header">
         <div>
           <p className="ti-number">{issue.issueNumber}</p>

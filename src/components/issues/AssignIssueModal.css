@@ -1,44 +1,171 @@
+@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap");
+
 .aim-overlay {
-    position: fixed;
+    --ink: #201a10;
+    --ink-soft: #2c2416;
+    --graphite: #6b6255;
+    --graphite-soft: #9a917f;
+    --paper: #faf7f0;
+    --surface: #ffffff;
+    --line: #e9e3d5;
+    --line-strong: #ddd4bf;
+
+    --amber: #f0a622;
+    --amber-deep: #cf8a12;
+    --amber-ink: #7a4e0a;
+    --amber-tint: #fdf0d4;
+
+    --critical: #c8503a;
+
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 16px;
+
+    --shadow-sm: 0 1px 2px rgba(32, 26, 16, 0.07);
+    --shadow-md: 0 6px 20px rgba(32, 26, 16, 0.1);
+    --shadow-lg: 0 24px 60px rgba(32, 26, 16, 0.28);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .aim-overlay * {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+.aim-overlay * {
+    box-sizing: border-box;
+}
+
+/* ---------- Overlay ---------- */
+/* !important on position/z-index defensively — this modal can be mounted
+   as a direct child of pages that apply their own ">* { position: relative }"
+   rules, which would otherwise silently break the fixed, full-viewport
+   overlay (same class of bug fixed on CreateIssueModal). */
+.aim-overlay {
+    position: fixed !important;
     inset: 0;
-    background: rgba(15, 23, 42, 0.55);
+    background: rgba(32, 26, 16, 0.55);
+    backdrop-filter: blur(4px);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
+    z-index: 1000 !important;
     padding: 20px;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    animation: aim-overlay-in 0.22s ease both;
 }
 
+@keyframes aim-overlay-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* ---------- Card ---------- */
 .aim-modal {
-    background: white;
-    border-radius: 20px;
-    padding: 26px;
+    position: relative;
+    background: var(--surface);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 28px 28px 24px;
     width: 100%;
     max-width: 480px;
     max-height: 80vh;
     overflow-y: auto;
+    box-shadow: var(--shadow-lg);
+    animation: aim-modal-in 0.3s cubic-bezier(0.2, 0.9, 0.3, 1) both;
+}
+
+@keyframes aim-modal-in {
+    from {
+        opacity: 0;
+        transform: translateY(18px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.aim-modal::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    background: linear-gradient(90deg, var(--amber) 0%, rgba(240, 166, 34, 0.15) 55%, transparent 90%);
 }
 
 .aim-modal h3 {
-    font-size: 17px;
-    font-weight: 800;
-    color: #1e293b;
+    font-family: "Oswald", "Inter", sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    color: var(--ink);
+    margin: 6px 0 4px;
+}
+
+.aim-modal h3::before {
+    content: "";
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    background: var(--amber);
+    margin-right: 9px;
+    transform: translateY(-1px);
 }
 
 .aim-subtitle {
     font-size: 12.5px;
-    color: #94a3b8;
-    margin-bottom: 18px;
+    color: var(--graphite);
+    margin: 0 0 20px;
+    padding-left: 17px;
 }
 
+/* ---------- Loading / empty ---------- */
 .aim-loading,
 .aim-empty {
     text-align: center;
-    color: #64748b;
+    color: var(--graphite);
     font-size: 13px;
-    padding: 24px 0;
+    padding: 28px 0;
 }
 
+.aim-loading::after {
+    content: "";
+    display: inline-block;
+    width: 13px;
+    height: 13px;
+    margin-left: 9px;
+    border: 2px solid var(--line-strong);
+    border-top-color: var(--amber);
+    border-radius: 50%;
+    vertical-align: -2px;
+    animation: aim-spin 0.7s linear infinite;
+}
+
+@keyframes aim-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.aim-empty {
+    color: var(--graphite-soft);
+}
+
+/* ---------- List ---------- */
 .aim-list {
     display: flex;
     flex-direction: column;
@@ -51,8 +178,17 @@
     align-items: center;
     gap: 12px;
     padding: 12px 14px;
-    border: 1.5px solid #f1f5f9;
-    border-radius: 12px;
+    background: var(--paper);
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius-md);
+    transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.aim-row:hover {
+    background: var(--amber-tint);
+    border-color: var(--amber);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
 }
 
 .aim-row-info {
@@ -63,7 +199,7 @@
 .aim-row-title {
     font-size: 13.5px;
     font-weight: 700;
-    color: #1e293b;
+    color: var(--ink);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -71,34 +207,106 @@
 
 .aim-row-sub {
     font-size: 11.5px;
-    color: #94a3b8;
+    color: var(--graphite-soft);
     margin-top: 2px;
+    font-family: "JetBrains Mono", monospace;
 }
 
+/* ---------- Assign / close buttons ---------- */
 .aim-assign-btn {
+    position: relative;
     padding: 8px 16px;
-    border-radius: 10px;
+    border-radius: var(--radius-sm);
     border: none;
-    background: linear-gradient(135deg, #2563eb, #0d9488);
-    color: white;
+    background: var(--ink);
+    color: #fff;
     font-weight: 600;
     font-size: 12px;
+    letter-spacing: 0.01em;
     cursor: pointer;
     white-space: nowrap;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.2s ease;
+}
+
+.aim-assign-btn::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3px;
+    background: repeating-linear-gradient(-45deg, var(--amber) 0 6px, var(--ink-soft) 6px 12px);
+    transform: translateY(3px);
+    transition: transform 0.2s ease;
+}
+
+.aim-assign-btn:hover:not(:disabled) {
+    background: var(--ink-soft);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.aim-assign-btn:hover:not(:disabled)::after {
+    transform: translateY(0);
 }
 
 .aim-assign-btn:disabled {
     opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.aim-assign-btn:focus-visible {
+    outline: 2px solid var(--amber);
+    outline-offset: 2px;
 }
 
 .aim-close-btn {
     width: 100%;
-    height: 42px;
-    border: none;
-    border-radius: 10px;
-    background: #f1f5f9;
-    color: #475569;
+    height: 44px;
+    border: 1.5px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--graphite);
     font-weight: 600;
     font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
     cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+
+.aim-close-btn:hover {
+    background: var(--paper);
+    border-color: var(--graphite-soft);
+    color: var(--ink);
+    transform: translateY(-1px);
+}
+
+.aim-close-btn:focus-visible {
+    outline: 2px solid var(--amber);
+    outline-offset: 2px;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 560px) {
+    .aim-modal {
+        padding: 24px 20px 20px;
+        border-radius: var(--radius-md);
+    }
+
+    .aim-modal h3 {
+        font-size: 17px;
+    }
+}
+
+@media (max-width: 480px) {
+    .aim-row {
+        flex-wrap: wrap;
+    }
+
+    .aim-assign-btn {
+        flex: 1 1 100%;
+    }
 }

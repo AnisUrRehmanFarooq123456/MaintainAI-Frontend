@@ -1,177 +1,648 @@
-.st-title {
-    font-size: 24px;
-    font-weight: 800;
-    color: #0f172a;
+.tt-page {
+    --ink: #201a10;
+    --ink-soft: #2c2416;
+    --graphite: #6b6255;
+    --graphite-soft: #9a917f;
+    --paper: #faf7f0;
+    --surface: #ffffff;
+    --line: #e9e3d5;
+    --line-strong: #ddd4bf;
+
+    --amber: #f0a622;
+    --amber-deep: #cf8a12;
+    --amber-ink: #7a4e0a;
+    --amber-tint: #fdf0d4;
+
+    --critical: #c8503a;
+    --success: #3f7d4a;
+    --success-tint: #e6f1e7;
+
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 16px;
+    --radius-xl: 22px;
+
+    --shadow-sm: 0 1px 2px rgba(32, 26, 16, 0.07);
+    --shadow-md: 0 6px 20px rgba(32, 26, 16, 0.1);
+    --shadow-lg: 0 20px 50px rgba(32, 26, 16, 0.16);
+
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color: var(--ink);
+    background: var(--paper);
+    padding: 32px 40px 64px;
+    max-width: 1280px;
+    margin: 0 auto;
+    animation: tt-fade-up 0.5s ease both;
 }
 
-.st-subtitle {
-    color: #64748b;
-    font-size: 13px;
-    margin-bottom: 22px;
+.tt-page * {
+    box-sizing: border-box;
 }
 
-.st-loading,
-.st-empty {
-    text-align: center;
-    padding: 40px;
-    color: #64748b;
+@media (prefers-reduced-motion: reduce) {
+    .tt-page * {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
 }
 
-.st-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 16px;
+@keyframes tt-fade-up {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-.st-card {
-    background: white;
-    border-radius: 20px;
-    padding: 22px;
-    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
-    transition: transform 0.2s, box-shadow 0.2s;
+@keyframes tt-fade-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
-.st-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.1);
+@keyframes tt-card-in {
+    from {
+        opacity: 0;
+        transform: translateY(14px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
-.st-card-top {
+@keyframes tt-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ---------- Header ---------- */
+.tt-title {
+    font-family: "Oswald", "Inter", sans-serif;
+    font-weight: 600;
+    font-size: clamp(22px, 3vw, 28px);
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    color: var(--ink);
+    margin: 0 0 6px;
+    animation: tt-fade-up 0.55s ease both;
+}
+
+.tt-subtitle {
+    color: var(--graphite);
+    font-size: 13.5px;
+    line-height: 1.5;
+    margin: 0 0 26px;
+    animation: tt-fade-up 0.55s ease 0.03s both;
+}
+
+/* ---------- Toolbar: role tabs + search ---------- */
+.tt-toolbar {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 14px;
-    margin-bottom: 18px;
+    flex-wrap: wrap;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 10px;
+    margin-bottom: 26px;
+    box-shadow: var(--shadow-sm);
+    animation: tt-fade-up 0.55s ease 0.05s both;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
-.st-avatar {
-    width: 52px;
-    height: 52px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #2563eb, #0d9488);
-    color: white;
-    font-size: 20px;
-    font-weight: 800;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
+.tt-toolbar:hover {
+    border-color: var(--line-strong);
+    box-shadow: var(--shadow-md);
 }
 
-.st-card-info {
-    min-width: 0;
-}
-
-.st-name {
-    font-size: 15px;
-    font-weight: 700;
-    color: #1e293b;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.st-role,
-.st-email {
+.tt-role-tabs {
     display: flex;
     align-items: center;
     gap: 6px;
-    font-size: 11.5px;
-    color: #94a3b8;
-    margin-top: 3px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    flex-wrap: wrap;
 }
 
-.st-role {
-    color: #2563eb;
+.tt-role-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 14px;
+    border-radius: var(--radius-sm);
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--graphite);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+.tt-role-tab-icon {
+    font-size: 12px;
+    display: inline-flex;
+}
+
+.tt-role-tab:hover {
+    background: var(--amber-tint);
+    color: var(--ink);
+    transform: translateY(-1px);
+}
+
+.tt-role-tab-active,
+.tt-role-tab-active:hover {
+    background: var(--ink);
+    color: #fff;
+    border-color: var(--ink);
+}
+
+.tt-role-tab-active .tt-role-tab-count {
+    background: rgba(240, 166, 34, 0.22);
+    color: var(--amber);
+}
+
+.tt-role-tab-count {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    font-weight: 700;
+    background: var(--amber-tint);
+    color: var(--amber-ink);
+    border-radius: 999px;
+    padding: 2px 8px;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.tt-role-tab:focus-visible {
+    outline: 2px solid var(--amber);
+    outline-offset: 2px;
+}
+
+.tt-search {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--paper);
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    flex: 1 1 220px;
+    max-width: 320px;
+    transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.tt-search:hover {
+    background: var(--amber-tint);
+}
+
+.tt-search:focus-within {
+    background: var(--surface);
+    border-color: var(--amber);
+    box-shadow: 0 0 0 3px rgba(240, 166, 34, 0.16);
+}
+
+.tt-search-icon {
+    color: var(--graphite-soft);
+    font-size: 13px;
+    flex-shrink: 0;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.tt-search:focus-within .tt-search-icon {
+    color: var(--amber-deep);
+    transform: scale(1.1);
+}
+
+.tt-search input {
+    border: none;
+    outline: none;
+    font-size: 13.5px;
+    width: 100%;
+    background: transparent;
+    color: var(--ink);
+    font-family: inherit;
+}
+
+.tt-search input::placeholder {
+    color: var(--graphite-soft);
+}
+
+/* ---------- Loading / empty / error states ---------- */
+.tt-loading,
+.tt-empty,
+.tt-error {
+    text-align: center;
+    padding: 72px 20px;
+    color: var(--graphite);
+    font-weight: 500;
+    font-size: 14.5px;
+    animation: tt-fade-in 0.4s ease both;
+}
+
+.tt-loading::after {
+    content: "";
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    margin-left: 10px;
+    border: 2px solid var(--line-strong);
+    border-top-color: var(--amber);
+    border-radius: 50%;
+    vertical-align: -3px;
+    animation: tt-spin 0.7s linear infinite;
+}
+
+.tt-empty {
+    color: var(--graphite-soft);
+}
+
+.tt-error {
+    color: var(--critical);
     font-weight: 600;
 }
 
-.st-stats {
+/* ---------- Grid ---------- */
+.tt-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 18px;
+}
+
+/* ---------- Card ---------- */
+.tt-card {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-xl);
+    padding: 26px 22px;
+    box-shadow: var(--shadow-sm);
+    text-align: center;
+    overflow: hidden;
+    opacity: 0;
+    animation: tt-card-in 0.45s ease forwards;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.tt-grid>.tt-card:nth-child(1) {
+    animation-delay: 0.02s;
+}
+
+.tt-grid>.tt-card:nth-child(2) {
+    animation-delay: 0.06s;
+}
+
+.tt-grid>.tt-card:nth-child(3) {
+    animation-delay: 0.10s;
+}
+
+.tt-grid>.tt-card:nth-child(4) {
+    animation-delay: 0.14s;
+}
+
+.tt-grid>.tt-card:nth-child(5) {
+    animation-delay: 0.18s;
+}
+
+.tt-grid>.tt-card:nth-child(6) {
+    animation-delay: 0.22s;
+}
+
+.tt-grid>.tt-card:nth-child(n+7) {
+    animation-delay: 0.24s;
+}
+
+.tt-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--amber) 0%, rgba(240, 166, 34, 0.15) 60%, transparent 100%);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+}
+
+.tt-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--line-strong);
+}
+
+.tt-card:hover::before {
+    transform: scaleX(1);
+}
+
+/* ---------- Avatar ---------- */
+.tt-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--ink) 0%, var(--ink-soft) 100%);
+    color: var(--amber);
+    font-family: "Oswald", "Inter", sans-serif;
+    font-size: 22px;
+    font-weight: 700;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 20px;
-    padding: 14px 0;
-    border-top: 1px solid #f1f5f9;
-    border-bottom: 1px solid #f1f5f9;
-    margin-bottom: 14px;
+    margin: 0 auto 16px auto;
+    border: 2px solid var(--amber-tint);
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
-.st-stat {
+.tt-card:hover .tt-avatar {
+    transform: scale(1.08) rotate(-4deg);
+    box-shadow: 0 0 0 5px rgba(240, 166, 34, 0.18);
+    border-color: var(--amber);
+}
+
+/* ---------- Identity ---------- */
+.tt-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 0;
+}
+
+.tt-role {
+    font-size: 12.5px;
+    color: var(--amber-deep);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.tt-email {
+    font-size: 12px;
+    color: var(--graphite-soft);
+    margin-top: 5px;
+    word-break: break-word;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+/* Role badge pill, used on non-technician cards in place of the stats block */
+.tt-role-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 16px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    background: var(--amber-tint);
+    color: var(--amber-ink);
+    border: 1px solid #f0dcab;
+}
+
+.tt-role-badge-supervisor {
+    background: #e7edf7;
+    color: #2f4c8c;
+    border-color: #cfdaf1;
+}
+
+.tt-role-badge-user {
+    background: var(--paper);
+    color: var(--graphite);
+    border-color: var(--line-strong);
+}
+
+/* ---------- Stats (technician cards) ---------- */
+.tt-stats {
+    display: flex;
+    justify-content: center;
+    gap: 28px;
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px dashed var(--line-strong);
+}
+
+.tt-stat {
     display: flex;
     flex-direction: column;
     align-items: center;
+    transition: transform 0.2s ease;
 }
 
-.st-stat-divider {
-    width: 1px;
-    height: 30px;
-    background: #f1f5f9;
+.tt-card:hover .tt-stat {
+    transform: translateY(-1px);
 }
 
-.st-stat-value {
-    font-size: 20px;
-    font-weight: 800;
-}
-
-.st-assigned {
-    color: #d97706;
-}
-
-.st-completed {
-    color: #16a34a;
-}
-
-.st-stat-label {
-    font-size: 10.5px;
-    color: #94a3b8;
-    margin-top: 2px;
-}
-
-.st-workload-bar {
-    height: 6px;
-    background: #f1f5f9;
-    border-radius: 10px;
-    overflow: hidden;
-    margin-bottom: 16px;
-}
-
-.st-workload-fill {
-    height: 100%;
-    border-radius: 10px;
-    transition: width 0.3s;
-}
-
-.st-workload-low {
-    background: linear-gradient(90deg, #16a34a, #22c55e);
-}
-
-.st-workload-mid {
-    background: linear-gradient(90deg, #d97706, #f59e0b);
-}
-
-.st-workload-high {
-    background: linear-gradient(90deg, #dc2626, #ef4444);
-}
-
-.st-assign-btn {
-    width: 100%;
-    height: 42px;
-    border: none;
-    border-radius: 12px;
-    background: linear-gradient(135deg, #2563eb, #0d9488);
-    color: white;
+.tt-stat-value {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 21px;
     font-weight: 700;
-    font-size: 13px;
-    cursor: pointer;
-    display: flex;
+}
+
+.tt-assigned {
+    color: var(--amber-deep);
+}
+
+.tt-completed {
+    color: var(--success);
+}
+
+.tt-stat-label {
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--graphite-soft);
+    margin-top: 4px;
+}
+
+/* ---------- Workload bar ---------- */
+.tt-workload-bar {
+    height: 6px;
+    border-radius: 999px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    overflow: hidden;
+    margin-top: 16px;
+}
+
+.tt-workload-fill {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 0.5s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.tt-workload-low {
+    background: var(--success);
+}
+
+.tt-workload-mid {
+    background: var(--amber);
+}
+
+.tt-workload-high {
+    background: var(--critical);
+}
+
+/* ---------- Assign button ---------- */
+.tt-assign-btn {
+    position: relative;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
+    width: 100%;
+    margin-top: 18px;
+    padding: 11px 14px;
+    border-radius: var(--radius-sm);
+    border: none;
+    background: var(--ink);
+    color: #fff;
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    cursor: pointer;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.2s ease;
 }
 
-.st-assign-btn:hover {
-    opacity: 0.92;
+.tt-assign-btn::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3px;
+    background: repeating-linear-gradient(-45deg, var(--amber) 0 6px, var(--ink-soft) 6px 12px);
+    transform: translateY(3px);
+    transition: transform 0.2s ease;
+}
+
+.tt-assign-btn:hover {
+    background: var(--ink-soft);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.tt-assign-btn:hover::after {
+    transform: translateY(0);
+}
+
+.tt-assign-btn:active {
+    transform: translateY(0);
+}
+
+.tt-assign-btn:focus-visible {
+    outline: 2px solid var(--amber);
+    outline-offset: 2px;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+    .tt-page {
+        padding: 28px 26px 56px;
+    }
+}
+
+@media (max-width: 768px) {
+    .tt-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .tt-search {
+        max-width: none;
+    }
+
+    .tt-grid {
+        grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+        gap: 14px;
+    }
+
+    .tt-card {
+        padding: 22px 18px;
+    }
+}
+
+@media (max-width: 640px) {
+    .tt-page {
+        padding: 22px 16px 48px;
+    }
+
+    .tt-title {
+        font-size: 21px;
+    }
+
+    .tt-stats {
+        gap: 20px;
+    }
+
+    .tt-role-tabs {
+        width: 100%;
+    }
+
+    .tt-role-tab {
+        flex: 1 1 auto;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .tt-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 12px;
+    }
+
+    .tt-card {
+        padding: 20px 14px;
+    }
+
+    .tt-avatar {
+        width: 52px;
+        height: 52px;
+        font-size: 19px;
+    }
+
+    .tt-name {
+        font-size: 14.5px;
+    }
+
+    .tt-stat-value {
+        font-size: 18px;
+    }
+
+    .tt-stats {
+        gap: 16px;
+    }
+
+    .tt-role-tab {
+        padding: 8px 10px;
+        font-size: 12px;
+    }
 }

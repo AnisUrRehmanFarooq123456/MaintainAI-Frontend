@@ -1,73 +1,208 @@
+@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap");
+
+.cim-overlay {
+    --ink: #201a10;
+    --ink-soft: #2c2416;
+    --graphite: #6b6255;
+    --graphite-soft: #9a917f;
+    --paper: #faf7f0;
+    --surface: #ffffff;
+    --line: #e9e3d5;
+    --line-strong: #ddd4bf;
+
+    --amber: #f0a622;
+    --amber-deep: #cf8a12;
+    --amber-ink: #7a4e0a;
+    --amber-tint: #fdf0d4;
+
+    --critical: #c8503a;
+
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 16px;
+
+    --shadow-sm: 0 1px 2px rgba(32, 26, 16, 0.07);
+    --shadow-md: 0 6px 20px rgba(32, 26, 16, 0.1);
+    --shadow-lg: 0 24px 60px rgba(32, 26, 16, 0.28);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cim-overlay * {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+.cim-overlay * {
+    box-sizing: border-box;
+}
+
+/* ---------- Overlay ---------- */
 .cim-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(15, 23, 42, 0.55);
+    background: rgba(32, 26, 16, 0.55);
+    backdrop-filter: blur(4px);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 1000;
     padding: 20px;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    animation: cim-overlay-in 0.22s ease both;
 }
 
+@keyframes cim-overlay-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* ---------- Card ---------- */
+/* Solid, fully opaque surface — this is what fixes the "washed out /
+   see-through" look: an explicit background + ink text color, not
+   whatever the page behind it happens to be. */
 .cim-modal {
-    background: white;
-    border-radius: 20px;
-    padding: 26px;
+    position: relative;
+    background: var(--surface);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 28px 28px 24px;
     width: 100%;
     max-width: 460px;
     max-height: 85vh;
     overflow-y: auto;
+    box-shadow: var(--shadow-lg);
+    animation: cim-modal-in 0.3s cubic-bezier(0.2, 0.9, 0.3, 1) both;
+}
+
+@keyframes cim-modal-in {
+    from {
+        opacity: 0;
+        transform: translateY(18px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.cim-modal::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    background: linear-gradient(90deg, var(--amber) 0%, rgba(240, 166, 34, 0.15) 55%, transparent 90%);
 }
 
 .cim-modal h3 {
-    font-size: 17px;
-    font-weight: 800;
-    color: #1e293b;
+    font-family: "Oswald", "Inter", sans-serif;
+    font-weight: 600;
+    font-size: 19px;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    color: var(--ink);
+    margin: 6px 0 4px;
+}
+
+.cim-modal h3::before {
+    content: "";
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    background: var(--amber);
+    margin-right: 9px;
+    transform: translateY(-1px);
 }
 
 .cim-subtitle {
     font-size: 12.5px;
-    color: #94a3b8;
-    margin-bottom: 18px;
+    color: var(--graphite);
+    margin: 0 0 20px;
+    padding-left: 17px;
 }
 
+/* ---------- Form ---------- */
 .cim-form {
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 16px;
 }
 
 .cim-field label {
     display: block;
-    font-size: 13px;
+    font-size: 11.5px;
     font-weight: 600;
-    color: #334155;
-    margin-bottom: 6px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--graphite);
+    margin-bottom: 7px;
 }
 
 .cim-field input,
 .cim-field select,
 .cim-field textarea {
     width: 100%;
-    border: 1.5px solid #e2e8f0;
-    border-radius: 10px;
-    padding: 10px 12px;
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 11px 13px;
     font-size: 13.5px;
     outline: none;
-    background: #f8fafc;
+    background: var(--paper);
+    color: var(--ink);
     font-family: inherit;
+    transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.cim-field input::placeholder,
+.cim-field textarea::placeholder {
+    color: var(--graphite-soft);
+}
+
+.cim-field select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b6255' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 13px;
+    padding-right: 34px;
+}
+
+.cim-field textarea {
+    resize: vertical;
+    min-height: 84px;
+    line-height: 1.5;
+}
+
+.cim-field input:hover,
+.cim-field select:hover,
+.cim-field textarea:hover {
+    border-color: var(--line-strong);
 }
 
 .cim-field input:focus,
 .cim-field select:focus,
 .cim-field textarea:focus {
-    border-color: #2563eb;
-    background: white;
+    border-color: var(--amber);
+    background: var(--surface);
+    box-shadow: 0 0 0 3px rgba(240, 166, 34, 0.16);
 }
 
 .cim-loading-text {
     font-size: 12.5px;
-    color: #94a3b8;
+    color: var(--graphite-soft);
+    padding: 11px 0;
 }
 
 .cim-row {
@@ -76,39 +211,110 @@
     gap: 12px;
 }
 
+/* ---------- Actions ---------- */
 .cim-actions {
     display: flex;
     gap: 10px;
-    margin-top: 4px;
+    margin-top: 6px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
 }
 
 .cim-cancel-btn,
 .cim-submit-btn {
     flex: 1;
-    height: 44px;
-    border-radius: 10px;
+    height: 46px;
+    border-radius: var(--radius-sm);
     border: none;
-    font-weight: 700;
-    font-size: 13.5px;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
     cursor: pointer;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
 .cim-cancel-btn {
-    background: #f1f5f9;
-    color: #475569;
+    background: transparent;
+    color: var(--graphite);
+    border: 1.5px solid var(--line-strong);
+}
+
+.cim-cancel-btn:hover {
+    background: var(--paper);
+    border-color: var(--graphite-soft);
+    color: var(--ink);
+    transform: translateY(-1px);
 }
 
 .cim-submit-btn {
-    background: linear-gradient(135deg, #2563eb, #0d9488);
-    color: white;
+    position: relative;
+    background: var(--ink);
+    color: #fff;
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+
+.cim-submit-btn::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3px;
+    background: repeating-linear-gradient(-45deg, var(--amber) 0 6px, var(--ink-soft) 6px 12px);
+    transform: translateY(3px);
+    transition: transform 0.2s ease;
+}
+
+.cim-submit-btn:hover:not(:disabled) {
+    background: var(--ink-soft);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.cim-submit-btn:hover:not(:disabled)::after {
+    transform: translateY(0);
+}
+
+.cim-submit-btn:active:not(:disabled) {
+    transform: translateY(0);
 }
 
 .cim-submit-btn:disabled {
     opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.cim-cancel-btn:focus-visible,
+.cim-submit-btn:focus-visible {
+    outline: 2px solid var(--amber);
+    outline-offset: 2px;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 560px) {
+    .cim-modal {
+        padding: 24px 20px 20px;
+        border-radius: var(--radius-md);
+    }
+
+    .cim-modal h3 {
+        font-size: 17px;
+    }
 }
 
 @media (max-width: 500px) {
     .cim-row {
         grid-template-columns: 1fr;
+    }
+
+    .cim-actions {
+        flex-direction: column-reverse;
+    }
+
+    .cim-cancel-btn,
+    .cim-submit-btn {
+        width: 100%;
     }
 }

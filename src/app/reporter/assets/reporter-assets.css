@@ -1,27 +1,234 @@
+@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap");
+
+.ra-page {
+    --ink: #201a10;
+    --ink-soft: #2c2416;
+    --graphite: #6b6255;
+    --graphite-soft: #9a917f;
+    --paper: #faf7f0;
+    --surface: #ffffff;
+    --line: #e9e3d5;
+    --line-strong: #ddd4bf;
+
+    --amber: #f0a622;
+    --amber-deep: #cf8a12;
+    --amber-ink: #7a4e0a;
+    --amber-tint: #fdf0d4;
+
+    --critical: #c8503a;
+    --success: #3f7d4a;
+
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 16px;
+    --radius-xl: 22px;
+
+    --shadow-sm: 0 1px 2px rgba(32, 26, 16, 0.07);
+    --shadow-md: 0 6px 20px rgba(32, 26, 16, 0.1);
+    --shadow-lg: 0 20px 50px rgba(32, 26, 16, 0.16);
+
+    position: relative;
+    box-sizing: border-box;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color: var(--ink);
+    background: var(--paper);
+    min-height: 100vh;
+    padding: 44px 40px 96px;
+    max-width: 1280px;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.ra-page *,
+.ra-page *::before,
+.ra-page *::after {
+    box-sizing: border-box;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .ra-page *,
+    .ra-page *::before,
+    .ra-page *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* ---------- Decorative header backdrop (grid + amber wash) ---------- */
+.ra-page::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -40px;
+    right: -40px;
+    height: 300px;
+    background-image:
+        linear-gradient(var(--line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(ellipse 70% 60% at 20% 0%, black 30%, transparent 85%);
+    -webkit-mask-image: radial-gradient(ellipse 70% 60% at 20% 0%, black 30%, transparent 85%);
+    opacity: 0.6;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.ra-page::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--amber) 0%, rgba(240, 166, 34, 0.1) 45%, transparent 75%);
+    z-index: 0;
+}
+
+.ra-page>* {
+    position: relative;
+    z-index: 1;
+}
+
+/* ---------- Keyframes ---------- */
+@keyframes ra-fade-up {
+    from {
+        opacity: 0;
+        transform: translateY(18px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes ra-pop {
+    0% {
+        opacity: 0;
+        transform: scale(0.94) translateY(10px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes ra-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes ra-underline {
+    from {
+        transform: scaleX(0);
+    }
+
+    to {
+        transform: scaleX(1);
+    }
+}
+
+@keyframes ra-shine {
+    0% {
+        transform: translateX(-120%) skewX(-20deg);
+    }
+
+    100% {
+        transform: translateX(220%) skewX(-20deg);
+    }
+}
+
+/* ---------- Header ---------- */
 .ra-title {
-    font-size: 24px;
-    font-weight: 800;
-    color: #0f172a;
+    position: relative;
+    display: inline-block;
+    font-family: "Oswald", "Inter", sans-serif;
+    font-weight: 600;
+    font-size: clamp(28px, 3.6vw, 40px);
+    line-height: 1.1;
+    letter-spacing: 0.005em;
+    text-transform: uppercase;
+    margin: 0;
+    background: linear-gradient(100deg, var(--ink) 40%, var(--amber-deep) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: ra-fade-up 0.6s ease both;
+}
+
+.ra-title::after {
+    content: "";
+    position: absolute;
+    left: 1px;
+    right: 1px;
+    bottom: -6px;
+    height: 3px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--amber), var(--amber-tint));
+    transform-origin: left;
+    animation: ra-underline 0.7s cubic-bezier(0.65, 0, 0.35, 1) 0.3s both;
 }
 
 .ra-subtitle {
-    color: #64748b;
-    font-size: 13px;
-    margin-bottom: 20px;
+    color: var(--graphite);
+    font-size: 14.5px;
+    line-height: 1.6;
+    margin: 18px 0 28px;
+    animation: ra-fade-up 0.6s ease 0.08s both;
 }
 
+/* ---------- Search — pill, glowing, with an amber icon badge ---------- */
 .ra-search {
     display: flex;
     align-items: center;
-    gap: 10px;
-    background: white;
-    border: 1.5px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 0 14px;
-    height: 44px;
-    color: #94a3b8;
-    max-width: 400px;
-    margin-bottom: 22px;
+    gap: 12px;
+    background: var(--surface);
+    border: 1.5px solid var(--line);
+    border-radius: 999px;
+    padding: 0 8px 0 18px;
+    height: 52px;
+    color: var(--graphite-soft);
+    max-width: 420px;
+    margin-bottom: 34px;
+    box-shadow: var(--shadow-sm);
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+    animation: ra-fade-up 0.6s ease 0.14s both;
+}
+
+.ra-search svg {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    padding: 8px;
+    border-radius: 50%;
+    background: var(--amber-tint);
+    color: var(--amber-deep);
+    font-size: 12px;
+    transition: background 0.25s ease, color 0.25s ease, transform 0.25s ease;
+}
+
+.ra-search:hover {
+    border-color: var(--line-strong);
+    box-shadow: var(--shadow-md);
+}
+
+.ra-search:focus-within {
+    border-color: var(--amber-deep);
+    box-shadow: 0 0 0 4px rgba(240, 166, 34, 0.16), var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.ra-search:focus-within svg {
+    background: var(--amber);
+    color: #fff;
+    transform: scale(1.06) rotate(-8deg);
 }
 
 .ra-search input {
@@ -29,68 +236,326 @@
     outline: none;
     flex: 1;
     height: 100%;
-    font-size: 13.5px;
-    color: #1e293b;
+    font-size: 14px;
+    font-family: "Inter", sans-serif;
+    font-weight: 500;
+    color: var(--ink);
     background: transparent;
 }
 
+.ra-search input::placeholder {
+    color: var(--graphite-soft);
+    font-weight: 400;
+}
+
+/* ---------- Loading / empty states ---------- */
 .ra-loading,
 .ra-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
     text-align: center;
-    padding: 40px;
-    color: #64748b;
+    padding: 64px 20px;
+    color: var(--graphite);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
 }
 
+.ra-loading::before {
+    content: "";
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2.5px solid var(--line-strong);
+    border-top-color: var(--amber);
+    animation: ra-spin 0.7s linear infinite;
+}
+
+.ra-empty {
+    grid-column: 1 / -1;
+    flex-direction: column;
+    gap: 6px;
+    color: var(--graphite-soft);
+    font-weight: 500;
+    border: 1.5px dashed var(--line-strong);
+    border-radius: var(--radius-lg);
+    background: repeating-linear-gradient(-45deg,
+            var(--paper),
+            var(--paper) 10px,
+            #f3efe4 10px,
+            #f3efe4 11px);
+}
+
+.ra-empty::before {
+    content: "🔍";
+    font-size: 22px;
+    filter: grayscale(1) opacity(0.55);
+}
+
+/* ---------- Asset grid ---------- */
 .ra-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 22px;
+    align-items: stretch;
 }
 
+/* ---------- Asset card ----------
+   Flex column + margin-top:auto on the button so every card's
+   "View & Report Issue" button sits on the same baseline, no
+   matter how long the location/category text runs. */
 .ra-card {
-    background: white;
-    border-radius: 18px;
-    padding: 20px;
-    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
-    transition: transform 0.2s;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 24px 22px 22px;
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    animation: ra-pop 0.5s ease both;
+    transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.ra-grid .ra-card:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.ra-grid .ra-card:nth-child(2) {
+    animation-delay: 0.04s;
+}
+
+.ra-grid .ra-card:nth-child(3) {
+    animation-delay: 0.08s;
+}
+
+.ra-grid .ra-card:nth-child(4) {
+    animation-delay: 0.12s;
+}
+
+.ra-grid .ra-card:nth-child(5) {
+    animation-delay: 0.16s;
+}
+
+.ra-grid .ra-card:nth-child(6) {
+    animation-delay: 0.2s;
+}
+
+.ra-grid .ra-card:nth-child(n+7) {
+    animation-delay: 0.22s;
+}
+
+.ra-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--amber), var(--amber-deep));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.35s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.ra-card::after {
+    content: "";
+    position: absolute;
+    top: -30px;
+    right: -30px;
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: var(--amber-tint);
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    transform: scale(0.8);
+    z-index: 0;
 }
 
 .ra-card:hover {
-    transform: translateY(-3px);
+    transform: translateY(-7px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--line-strong);
+}
+
+.ra-card:hover::before {
+    transform: scaleX(1);
+}
+
+.ra-card:hover::after {
+    opacity: 0.5;
+    transform: scale(1);
 }
 
 .ra-card-top {
+    position: relative;
+    z-index: 1;
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    gap: 8px;
+    gap: 10px;
     margin-bottom: 6px;
 }
 
 .ra-card-name {
-    font-size: 14.5px;
+    font-size: 15.5px;
     font-weight: 700;
-    color: #1e293b;
+    color: var(--ink);
+    margin: 0;
+    line-height: 1.35;
+    transition: color 0.2s ease;
+}
+
+.ra-card:hover .ra-card-name {
+    color: var(--amber-ink);
 }
 
 .ra-card-code {
-    font-size: 12px;
-    color: #94a3b8;
+    position: relative;
+    z-index: 1;
+    display: inline-block;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--amber-deep);
+    background: var(--amber-tint);
+    border-radius: 5px;
+    padding: 2px 7px;
+    letter-spacing: 0.02em;
+    margin: 0;
 }
 
 .ra-card-location {
-    font-size: 12px;
-    color: #64748b;
-    margin: 8px 0 14px 0;
+    position: relative;
+    z-index: 1;
+    font-size: 12.5px;
+    color: var(--graphite);
+    line-height: 1.5;
+    margin: 12px 0 20px;
+    /* pushes everything below it down naturally; button is pinned via margin-top: auto */
 }
 
+/* ---------- CTA button — pinned to the bottom, with a light-sweep on hover ---------- */
 .ra-card-btn {
-    display: block;
-    text-align: center;
-    padding: 10px;
-    border-radius: 10px;
-    background: linear-gradient(135deg, #2563eb, #0d9488);
-    color: white;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: auto;
+    padding: 13px 14px;
+    border-radius: var(--radius-sm);
+    background: var(--ink);
+    color: #fff;
     font-weight: 600;
     font-size: 12.5px;
+    letter-spacing: 0.02em;
+    text-align: center;
+    text-decoration: none;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.ra-card-btn::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 40%;
+    background: linear-gradient(100deg,
+            transparent,
+            rgba(255, 255, 255, 0.35),
+            transparent);
+    transform: translateX(-120%) skewX(-20deg);
+}
+
+.ra-card-btn::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3px;
+    background: repeating-linear-gradient(-45deg,
+            var(--amber) 0 6px,
+            var(--ink-soft) 6px 12px);
+    transform: translateY(3px);
+    transition: transform 0.2s ease;
+}
+
+.ra-card-btn:hover {
+    background: var(--amber-deep);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.ra-card-btn:hover::before {
+    animation: ra-shine 0.9s ease;
+}
+
+.ra-card-btn:hover::after {
+    transform: translateY(0);
+}
+
+.ra-card-btn:active {
+    transform: translateY(0);
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 1080px) {
+    .ra-page {
+        padding: 36px 32px 80px;
+    }
+}
+
+@media (max-width: 768px) {
+    .ra-page {
+        padding: 30px 20px 64px;
+    }
+
+    .ra-page::before {
+        left: -20px;
+        right: -20px;
+        height: 220px;
+    }
+
+    .ra-search {
+        max-width: 100%;
+    }
+
+    .ra-grid {
+        grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+        gap: 16px;
+    }
+
+    .ra-card {
+        padding: 20px 18px 18px;
+    }
+}
+
+@media (max-width: 480px) {
+    .ra-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ra-title {
+        font-size: 24px;
+    }
+
+    .ra-search {
+        height: 48px;
+    }
+
+    .ra-card-name {
+        font-size: 14px;
+    }
 }

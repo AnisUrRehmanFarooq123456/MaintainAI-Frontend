@@ -164,7 +164,7 @@ export default function AssetDetailPage() {
                 rel="noopener noreferrer"
                 className="asset-qr-link"
               >
-                Open Public Page
+                Report an Issue
               </a>
             )}
           </div>

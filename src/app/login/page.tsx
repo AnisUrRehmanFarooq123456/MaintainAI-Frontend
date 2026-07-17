@@ -16,6 +16,7 @@ import AuthShell from "../../components/auth/AuthShell";
 import { saveUser } from "../../utils/auth";
 import { roleHomeRoute } from "../../utils/routes";
 import { normalizeRole } from "../../utils/routes";
+import ("./login.css")
 
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|net|org|edu|gov)$/;
 

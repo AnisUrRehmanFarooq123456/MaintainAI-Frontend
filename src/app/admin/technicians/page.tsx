@@ -215,7 +215,7 @@ export default function AdminUsersPage() {
             </div>
             {filteredUsers.map((u) => (
               <Link
-                href={`/admin/users/${u._id}`}
+                href={`/admin/technicians`}
                 key={u._id}
                 className="users-row"
               >
