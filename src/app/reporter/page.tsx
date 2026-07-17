@@ -7,6 +7,8 @@ import {
   FaExclamationCircle,
   FaCheckCircle,
   FaCalendarAlt,
+  FaMapMarkerAlt,
+  FaHashtag,
 } from "react-icons/fa";
 import { apiFetch } from "../../utils/api";
 import StatCard from "../../components/dashboard/StatCard";
@@ -18,9 +20,10 @@ type RecentComplaint = {
   _id: string;
   issueNumber: string;
   title: string;
+  description?: string;
   priority: string;
   status: string;
-  asset: { name: string; assetCode: string };
+  asset: { name: string; assetCode: string; location?: string };
   createdAt: string;
 };
 
@@ -31,6 +34,16 @@ type Stats = {
   recentComplaints: RecentComplaint[];
 };
 type Profile = { fullName: string; createdAt: string };
+
+function formatDate(dateStr: string) {
+  return new Date(dateStr).toLocaleDateString(undefined, {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
 
 export default function ReporterDashboardPage() {
   const [stats, setStats] = useState<Stats | null>(null);
@@ -109,15 +122,36 @@ export default function ReporterDashboardPage() {
         )}
         {stats.recentComplaints.map((c) => (
           <div className="rd-recent-row" key={c._id}>
-            <div>
-              <p className="rd-recent-title">{c.title}</p>
-              <p className="rd-recent-sub">
-                {c.issueNumber} · {c.asset?.name}
-              </p>
-            </div>
-            <div className="rd-recent-badges">
-              <PriorityBadge priority={c.priority} />
-              <IssueStatusBadge status={c.status} />
+            <div className="rd-recent-main">
+              <div className="rd-recent-top">
+                <p className="rd-recent-title">{c.title}</p>
+                <div className="rd-recent-badges">
+                  <PriorityBadge priority={c.priority} />
+                  <IssueStatusBadge status={c.status} />
+                </div>
+              </div>
+
+              {c.description && (
+                <p className="rd-recent-desc">{c.description}</p>
+              )}
+
+              <div className="rd-recent-meta">
+                <span className="rd-recent-meta-item">
+                  <FaHashtag /> {c.issueNumber}
+                </span>
+                <span className="rd-recent-meta-item">
+                  {c.asset?.name}
+                  {c.asset?.assetCode ? ` (${c.asset.assetCode})` : ""}
+                </span>
+                {c.asset?.location && (
+                  <span className="rd-recent-meta-item">
+                    <FaMapMarkerAlt /> {c.asset.location}
+                  </span>
+                )}
+                <span className="rd-recent-meta-item rd-recent-date">
+                  <FaCalendarAlt /> {formatDate(c.createdAt)}
+                </span>
+              </div>
             </div>
           </div>
         ))}
