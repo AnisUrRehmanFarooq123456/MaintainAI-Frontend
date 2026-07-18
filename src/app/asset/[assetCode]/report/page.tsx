@@ -1,268 +1,184 @@
 "use client";
 
-import { useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import Swal from "sweetalert2";
+import { useEffect, useMemo, useState } from "react";
 import { apiFetch } from "../../../../utils/api";
-import AITriageReview from "../../../../components/issues/AITriageReview";
-import "./report-issue.css";
-import EvidenceUploader from "../../../../components/ui/EvidenceUploader";
+import IssueStatusBadge from "../../../../components/ui/IssueStatusBadge";
+import PriorityBadge from "../../../../components/ui/PriorityBadge";
+import "./my-complaints.css";
 
-type AISuggestion = {
+type MyIssue = {
+  _id: string;
+  issueNumber: string;
   title: string;
-  category: string;
+  description: string;
   priority: string;
-  possibleCauses: string[];
-  initialChecks: string[];
+  status: string;
+  asset: { name: string; assetCode: string };
+  createdAt: string;
 };
 
-const EMPTY_SUGGESTION: AISuggestion = {
-  title: "",
-  category: "",
-  priority: "Medium",
-  possibleCauses: [],
-  initialChecks: [],
-};
+type Profile = { fullName: string };
 
-export default function ReportIssuePage() {
-  const params = useParams();
-  const router = useRouter();
-  const assetCode = params.assetCode as string;
+const STATUS_FILTERS = [
+  { key: "all", label: "All" },
+  { key: "open", label: "Open" },
+  { key: "resolved", label: "Resolved" },
+] as const;
 
-  const [evidence, setEvidence] = useState<string[]>([]);
-  const [complaint, setComplaint] = useState("");
-  const [reporterName, setReporterName] = useState("");
-  const [reporterContact, setReporterContact] = useState("");
-  const [triageLoading, setTriageLoading] = useState(false);
-  const [suggestion, setSuggestion] = useState<AISuggestion | null>(null);
-  const [originalSuggestion, setOriginalSuggestion] =
-    useState<AISuggestion | null>(null);
-  const [aiAvailable, setAiAvailable] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
+const OPEN_STATUSES = [
+  "Reported",
+  "Assigned",
+  "Inspection Started",
+  "Maintenance In Progress",
+  "Waiting for Parts",
+  "Reopened",
+];
+const RESOLVED_STATUSES = ["Resolved", "Closed"];
 
-  // Goes back two entries in the browser history (used by Cancel and
-  // after a successful submit) instead of pushing a hardcoded path.
-  const goBackTwice = () => {
-    if (typeof window !== "undefined") {
-      window.history.go(-2);
-    }
-  };
+function formatDate(dateStr: string) {
+  return new Date(dateStr).toLocaleDateString(undefined, {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
 
-  const handleGetSuggestion = async () => {
-    if (complaint.trim().length < 5) {
-      Swal.fire({
-        icon: "error",
-        title: "Describe the problem first",
-        text: "Minimum 5 characters",
-        showConfirmButton: false,
-        timer: 1600,
-      });
-      return;
-    }
+export default function ReporterIssuesPage() {
+  const [issues, setIssues] = useState<MyIssue[]>([]);
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const [filter, setFilter] =
+    useState<(typeof STATUS_FILTERS)[number]["key"]>("all");
 
-    setTriageLoading(true);
-    try {
-      const res = await apiFetch("/api/triage/generate", {
-        method: "POST",
-        auth: false,
-        body: { complaint },
-      });
-
-      // Helpful while debugging — check the browser console / network tab
-      // to confirm what the backend actually returned.
-      console.log("[triage] response:", res);
-
-      if (!res || res.status === false) {
-        throw new Error(res?.message || "Triage request failed");
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const [issuesRes, profileRes] = await Promise.all([
+          apiFetch("/api/issue/my-issues"),
+          apiFetch("/api/profile/me"),
+        ]);
+        setIssues(issuesRes.data || []);
+        setProfile(profileRes.data);
+      } catch {
+        setError(true);
+      } finally {
+        setLoading(false);
       }
+    };
+    load();
+  }, []);
 
-      // Guard against a malformed / partial shape from the API so the
-      // review form never crashes on missing fields.
-      const data =
-        res.data && typeof res.data === "object"
-          ? { ...EMPTY_SUGGESTION, ...res.data }
-          : EMPTY_SUGGESTION;
-
-      setSuggestion(data);
-      setOriginalSuggestion(data);
-      setAiAvailable(res.aiAvailable !== false);
-
-      if (res.aiAvailable === false) {
-        Swal.fire({
-          icon: "info",
-          title: "AI unavailable",
-          text: "Please fill in the details manually",
-          showConfirmButton: false,
-          timer: 2000,
-        });
-      }
-    } catch (err: any) {
-      console.error("[triage] error:", err);
-      Swal.fire({
-        icon: "error",
-        title: "Failed to get AI suggestion",
-        text: err?.message || "Something went wrong. Please try again.",
-      });
-
-      // Don't leave the user stuck with no form — fall back to a blank,
-      // manually-editable suggestion so they can still submit the issue.
-      setSuggestion(EMPTY_SUGGESTION);
-      setOriginalSuggestion(EMPTY_SUGGESTION);
-      setAiAvailable(false);
-    } finally {
-      setTriageLoading(false);
+  const filteredIssues = useMemo(() => {
+    if (filter === "open") {
+      return issues.filter((i) => OPEN_STATUSES.includes(i.status));
     }
-  };
-
-  const handleFieldChange = (field: keyof AISuggestion, value: string) => {
-    if (!suggestion) return;
-    setSuggestion({ ...suggestion, [field]: value });
-  };
-
-  const wasEdited = () => {
-    if (!suggestion || !originalSuggestion) return false;
-    return (
-      suggestion.title !== originalSuggestion.title ||
-      suggestion.category !== originalSuggestion.category ||
-      suggestion.priority !== originalSuggestion.priority
-    );
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!suggestion) {
-      Swal.fire({
-        icon: "error",
-        title: "Get an AI suggestion first (or fill it manually)",
-        showConfirmButton: false,
-        timer: 1800,
-      });
-      return;
+    if (filter === "resolved") {
+      return issues.filter((i) => RESOLVED_STATUSES.includes(i.status));
     }
-    if (!suggestion.title.trim()) {
-      Swal.fire({
-        icon: "error",
-        title: "Title is required",
-        showConfirmButton: false,
-        timer: 1600,
-      });
-      return;
-    }
+    return issues;
+  }, [issues, filter]);
 
-    setSubmitting(true);
-    try {
-      await apiFetch("/api/issue/report-issue", {
-        method: "POST",
-        auth: false,
-        body: {
-          assetCode,
-          title: suggestion.title,
-          description: complaint,
-          category: suggestion.category,
-          priority: suggestion.priority,
-          reporterName: reporterName || undefined,
-          reporterContact: reporterContact || undefined,
-          evidence,
-          aiSuggestion: aiAvailable ? originalSuggestion : undefined,
-          aiSuggested: aiAvailable,
-          aiEdited: wasEdited(),
-        },
-      });
-      Swal.fire({
-        icon: "success",
-        title: "Issue reported successfully",
-        text: "Thank you — the team has been notified",
-        showConfirmButton: false,
-        timer: 2200,
-      });
-      setTimeout(() => goBackTwice(), 2200);
-    } catch (err: any) {
-      console.error("[report-issue] submit error:", err);
-      Swal.fire({
-        icon: "error",
-        title: "Failed to submit",
-        text: err?.message || "Something went wrong. Please try again.",
-      });
-    } finally {
-      setSubmitting(false);
-    }
-  };
+  const counts = useMemo(
+    () => ({
+      all: issues.length,
+      open: issues.filter((i) => OPEN_STATUSES.includes(i.status)).length,
+      resolved: issues.filter((i) => RESOLVED_STATUSES.includes(i.status))
+        .length,
+    }),
+    [issues],
+  );
 
   return (
-    <main className="report-issue-page">
-      <div className="report-issue-card">
-        <h1 className="report-issue-title">Report an Issue</h1>
-        <p className="report-issue-subtitle">Asset: {assetCode}</p>
-
-        <div className="report-issue-field">
-          <label>Describe the problem</label>
-          <textarea
-            value={complaint}
-            onChange={(e) => setComplaint(e.target.value)}
-            placeholder="e.g. The projector display is flickering and sometimes does not detect HDMI"
-            rows={4}
-          />
-          <button
-            type="button"
-            className="report-issue-ai-btn"
-            onClick={handleGetSuggestion}
-            disabled={triageLoading}
-          >
-            {triageLoading ? "Analyzing..." : "Get AI Suggestion"}
-          </button>
-        </div>
-
-        {suggestion && (
-          <AITriageReview
-            suggestion={suggestion}
-            onChange={handleFieldChange}
-          />
-        )}
-
-        <form onSubmit={handleSubmit}>
-          <div className="report-issue-row">
-            <div className="report-issue-field">
-              <label>Your Name (optional)</label>
-              <input
-                type="text"
-                value={reporterName}
-                onChange={(e) => setReporterName(e.target.value)}
-                placeholder="e.g. Ahmed Ali"
-              />
-            </div>
-            <div className="report-issue-field">
-              <label>Contact (optional)</label>
-              <input
-                type="text"
-                value={reporterContact}
-                onChange={(e) => setReporterContact(e.target.value)}
-                placeholder="Phone or email"
-              />
-            </div>
-          </div>
-          <div className="report-issue-field">
-            <label>Evidence (optional)</label>
-            <EvidenceUploader evidence={evidence} onChange={setEvidence} />
-          </div>
-          <div className="report-issue-actions">
-            <button
-              type="button"
-              className="report-issue-cancel-btn"
-              onClick={goBackTwice}
-              disabled={submitting}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={submitting || !suggestion}
-              className="report-issue-submit-btn"
-            >
-              {submitting ? "Submitting..." : "Submit Issue"}
-            </button>
-          </div>
-        </form>
+    <div className="mc-page">
+      <div className="mc-header">
+        {profile?.fullName && <p className="mc-username">{profile.fullName}</p>}
+        <h1 className="mc-title">My Complaints</h1>
+        <p className="mc-subtitle">
+          All issues you have reported and their current status
+        </p>
       </div>
-    </main>
+
+      {!loading && !error && issues.length > 0 && (
+        <div className="mc-filters">
+          {STATUS_FILTERS.map((f) => (
+            <button
+              key={f.key}
+              className={`mc-filter-btn ${filter === f.key ? "active" : ""}`}
+              onClick={() => setFilter(f.key)}
+            >
+              {f.label}
+              <span className="mc-filter-count">{counts[f.key]}</span>
+            </button>
+          ))}
+        </div>
+      )}
+
+      {loading && (
+        <div className="mc-loading-wrap">
+          <div className="mc-spinner" />
+          <p className="mc-loading">Loading your complaints...</p>
+        </div>
+      )}
+
+      {!loading && error && (
+        <div className="mc-empty-wrap">
+          <p className="mc-empty mc-error">
+            Couldn&apos;t load your complaints right now. Please try again.
+          </p>
+        </div>
+      )}
+
+      {!loading && !error && (
+        <div className="mc-list">
+          {issues.length === 0 && (
+            <div className="mc-empty-wrap">
+              <p className="mc-empty">
+                You haven&apos;t reported any issues yet
+              </p>
+            </div>
+          )}
+
+          {issues.length > 0 && filteredIssues.length === 0 && (
+            <div className="mc-empty-wrap">
+              <p className="mc-empty">No complaints match this filter</p>
+            </div>
+          )}
+
+          {filteredIssues.map((issue, i) => (
+            <div
+              className={`mc-card ${
+                issue.priority === "Critical" ? "mc-card-critical" : ""
+              }`}
+              key={issue._id}
+              style={{ animationDelay: `${Math.min(i, 8) * 0.05}s` }}
+            >
+              <div className="mc-card-top">
+                <div className="mc-card-heading">
+                  <p className="mc-card-number">{issue.issueNumber}</p>
+                  <p className="mc-card-title">{issue.title}</p>
+                </div>
+                <div className="mc-card-badges">
+                  <PriorityBadge priority={issue.priority} />
+                  <IssueStatusBadge status={issue.status} />
+                </div>
+              </div>
+
+              <p className="mc-card-desc">{issue.description}</p>
+
+              <div className="mc-card-footer">
+                <span className="mc-card-meta">
+                  {issue.asset?.name}
+                  {issue.asset?.assetCode ? ` (${issue.asset.assetCode})` : ""}
+                </span>
+                <span className="mc-card-date">
+                  Reported {formatDate(issue.createdAt)}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
